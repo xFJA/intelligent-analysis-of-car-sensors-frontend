@@ -1,9 +1,11 @@
 import React from "react";
+import { DATASET } from "../dataset";
+import { BarGroup } from "./Bar/BarGroup";
 
 export const Home: React.FC = () => {
   return (
     <>
-      <h1>Hello world</h1>
+      <BarGroup dataset={DATASET} />
     </>
   );
 };

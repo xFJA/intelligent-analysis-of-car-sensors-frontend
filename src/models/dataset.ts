@@ -10,13 +10,14 @@ export interface Log {
   records: Record[];
 }
 
+// TODO: set to SensorPID enum when the api be ready
 export interface Record {
   id: number;
   value: number;
-  sensorPID: SensorPID;
+  sensorPID: string;
 }
 
-enum SensorPID {
+export enum SensorPID {
   EngineRPM = "ENGINE_RPM",
   VehicleSpeed = "VEHICLE_SPEED",
   Throttle = "THROTTLE",
@@ -24,7 +25,7 @@ enum SensorPID {
   CoolantTemperature = "COOLANT_TEMPERATURE",
   LongTermFuelTrimBank1 = "LONG_TERM_FUEL_TRIM_BANK_1",
   ShortTermFuelTrimBank1 = "SHORT_TERM_FUEL_TRIM_BANK_1",
-  IntakeManifoldPressure = "SHORT_TERM_FUEL_TRIM_BANK_1",
+  IntakeManifoldPressure =  "INTAKE_MANIFOLD_PRESSURE",
   FuelTank = "FUEL_TANK",
   AbsoluteThrottleB = "ABSOLUTE_THROTTLE_B",
   PedalD = "PEDAL_D",
