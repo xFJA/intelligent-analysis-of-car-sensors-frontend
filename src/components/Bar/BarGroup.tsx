@@ -20,6 +20,8 @@ interface Props {
 }
 
 export const BarGroup: React.FC<Props> = (props) => {
+  const classes = useStyles();
+
   const items = [];
 
   const { dataset } = props;
@@ -72,8 +74,6 @@ export const BarGroup: React.FC<Props> = (props) => {
       </GridListTile>
     );
   }
-
-  const classes = useStyles();
 
   return (
     <div className={classes.root}>

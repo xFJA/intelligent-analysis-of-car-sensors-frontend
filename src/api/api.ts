@@ -6,4 +6,11 @@ export class Api {
   getDatasets = async () => {
     return await fetch(BASE_URL + "datasets");
   };
+
+  addDataset = async () => {
+      return await fetch(BASE_URL + "datasets", {
+          method: "POST",
+          
+      })
+  }
 }
