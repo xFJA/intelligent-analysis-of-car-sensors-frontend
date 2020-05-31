@@ -1,7 +1,20 @@
+export interface DatasetsRequest {
+  data: LightDataset[];
+}
+
+export interface DatasetRequest {
+  data: Dataset;
+}
+
 export interface Dataset {
   id: number;
   date: number;
   logs: Log[];
+}
+
+export interface LightDataset {
+  id: number;
+  date: number;
 }
 
 export interface Log {
@@ -25,7 +38,7 @@ export enum SensorPID {
   CoolantTemperature = "COOLANT_TEMPERATURE",
   LongTermFuelTrimBank1 = "LONG_TERM_FUEL_TRIM_BANK_1",
   ShortTermFuelTrimBank1 = "SHORT_TERM_FUEL_TRIM_BANK_1",
-  IntakeManifoldPressure =  "INTAKE_MANIFOLD_PRESSURE",
+  IntakeManifoldPressure = "INTAKE_MANIFOLD_PRESSURE",
   FuelTank = "FUEL_TANK",
   AbsoluteThrottleB = "ABSOLUTE_THROTTLE_B",
   PedalD = "PEDAL_D",

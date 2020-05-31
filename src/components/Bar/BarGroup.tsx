@@ -25,6 +25,7 @@ export const BarGroup: React.FC<Props> = (props) => {
   const items = [];
 
   const { dataset } = props;
+  console.log(dataset)
 
   // TODO: Find a way to avoid initialize the map
   let res: Record<SensorPID, DataRecord[]> = {
@@ -55,6 +56,8 @@ export const BarGroup: React.FC<Props> = (props) => {
     DISTANCE_TRAVELED_WITH_MIL_ON: [],
     WARM_UPS_SINCE_CODES_CLEARED: [],
   };
+
+  console.log(dataset.logs);
 
   for (let log of dataset.logs) {
     for (let record of log.records) {
