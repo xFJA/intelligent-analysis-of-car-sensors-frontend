@@ -6,15 +6,14 @@ export interface DatasetRequest {
   data: Dataset;
 }
 
-export interface Dataset {
-  id: number;
-  date: number;
+export interface Dataset extends LightDataset {
   logs: Log[];
 }
 
 export interface LightDataset {
   id: number;
   date: number;
+  name: string;
 }
 
 export interface Log {
