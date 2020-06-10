@@ -29,4 +29,12 @@ export class Api {
       data: form,
     });
   };
+
+  pca = async (id: number): Promise<DatasetRequest> => {
+    return await axios(`${BASE_URL}pca/${id}`).then((response: any) => {
+      if (response.status !== 200) throw new Error(JSON.stringify(Response));
+      return response.data;
+    });
+  };
+
 }

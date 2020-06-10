@@ -9,10 +9,12 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Divider,
 } from "@material-ui/core";
 import { LightDataset, Dataset } from "../models/dataset";
 import { Api } from "../api/api";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 
 const service = new Api();
 
@@ -68,6 +70,18 @@ export const Home: React.FC = () => {
       });
   };
 
+  const onPCAUttonClick = (id: number) => {
+    service
+      .pca(id)
+      .then((res) => {
+        setDatasetSelected(res.data);
+      })
+      .catch((e) => {
+        // TODO: Use snackbar component
+        console.warn(e);
+      });
+  };
+
   return (
     <div>
       <TableContainer component={Paper}>
@@ -98,6 +112,34 @@ export const Home: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Divider />
+      {datasetSelected && (
+        <>
+          <Button
+            onClick={() => {
+              onPCAUttonClick(datasetSelected?.id);
+            }}
+          >
+            Apply PCA to dataset
+          </Button>
+          {datasetSelected.twoFirstComponentsPlot && (
+            <img
+              alt={"a"}
+              src={`data:image/png;base64,${datasetSelected.twoFirstComponentsPlot}`}
+            />
+          )}
+          {datasetSelected.componentsAndFeaturesPlot && (
+            <img
+              alt={"a"}
+              src={`data:image/png;base64,${datasetSelected.componentsAndFeaturesPlot}`}
+            />
+          )}
+          {datasetSelected.explainedVarianceRatio && (
+            <h1>{datasetSelected.explainedVarianceRatio}</h1>
+          )}
+        </>
+      )}
+      <Divider />
       {datasetSelected && <BarGroup dataset={datasetSelected} />}
     </div>
   );

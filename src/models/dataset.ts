@@ -8,6 +8,9 @@ export interface DatasetRequest {
 
 export interface Dataset extends LightDataset {
   logs: Log[];
+  twoFirstComponentsPlot:string
+  componentsAndFeaturesPlot :string
+  explainedVarianceRatio: number[]
 }
 
 export interface LightDataset {
