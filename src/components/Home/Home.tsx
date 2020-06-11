@@ -10,12 +10,15 @@ import {
   TableCell,
   TableBody,
   Divider,
+  IconButton,
 } from "@material-ui/core";
 import { LightDataset, Dataset } from "../../models/dataset";
 import { Api } from "../../api/api";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { ColumnNames } from "./ColumnNames";
+import { saveAs } from "@progress/kendo-file-saver";
+import DescriptionIcon from "@material-ui/icons/Description";
 
 const service = new Api();
 
@@ -72,11 +75,26 @@ export const Home: React.FC = () => {
       });
   };
 
-  const onPCAUttonClick = (id: number) => {
+  const onPCAButtonClick = (id: number) => {
     service
       .pca(id)
       .then((res) => {
         setDatasetSelected(res.data);
+      })
+      .catch((e) => {
+        // TODO: Use snackbar component
+        console.warn(e);
+      });
+  };
+
+  const onCSVDownload = (id: number, name: string) => {
+    service
+      .getDatasetCSV(id)
+      .then((res) => {
+        const blob = new Blob([res], {
+          type: "text/csv",
+        });
+        saveAs(blob, `${name}.csv`);
       })
       .catch((e) => {
         // TODO: Use snackbar component
@@ -98,6 +116,9 @@ export const Home: React.FC = () => {
               </TableCell>
               <TableCell className={classes.tableHeadCell}>
                 Column names
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                Download CSV
               </TableCell>
             </TableRow>
           </TableHead>
@@ -127,6 +148,16 @@ export const Home: React.FC = () => {
                   <TableCell>
                     <ColumnNames names={v.columnNames} />
                   </TableCell>
+                  <TableCell>
+                    <IconButton
+                      edge="start"
+                      onClick={() => {
+                        onCSVDownload(v.id, v.name);
+                      }}
+                    >
+                      <DescriptionIcon fontSize="large" />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               );
             })}
@@ -138,7 +169,7 @@ export const Home: React.FC = () => {
         <>
           <Button
             onClick={() => {
-              onPCAUttonClick(datasetSelected?.id);
+              onPCAButtonClick(datasetSelected?.id);
             }}
           >
             Apply PCA to dataset

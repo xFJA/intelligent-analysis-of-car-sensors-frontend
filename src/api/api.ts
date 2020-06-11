@@ -30,11 +30,17 @@ export class Api {
     });
   };
 
+  getDatasetCSV = async (id: number) => {
+    return await axios(`${BASE_URL}datasets/${id}/csv`).then((response: any) => {
+      if (response.status !== 200) throw new Error(JSON.stringify(Response));
+      return response.data;
+    });
+  };
+
   pca = async (id: number): Promise<DatasetRequest> => {
     return await axios(`${BASE_URL}pca/${id}`).then((response: any) => {
       if (response.status !== 200) throw new Error(JSON.stringify(Response));
       return response.data;
     });
   };
-
 }
