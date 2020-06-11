@@ -91,6 +91,7 @@ export const Home: React.FC = () => {
               <TableCell className={classes.tableHeadCell}>ID</TableCell>
               <TableCell className={classes.tableHeadCell}>Date</TableCell>
               <TableCell className={classes.tableHeadCell}>Name</TableCell>
+              <TableCell className={classes.tableHeadCell}>Rows number</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,6 +107,7 @@ export const Home: React.FC = () => {
                   </TableCell>
                   <TableCell>{moment.unix(v.date).format()}</TableCell>
                   <TableCell>{v.name}</TableCell>
+                  <TableCell>{v.rowsNumber}</TableCell>
                 </TableRow>
               );
             })}
