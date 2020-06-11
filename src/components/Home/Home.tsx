@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BarGroup } from "./Bar/BarGroup";
+import { BarGroup } from "../Bar/BarGroup";
 import * as moment from "moment";
 import {
   TableContainer,
@@ -11,10 +11,11 @@ import {
   TableBody,
   Divider,
 } from "@material-ui/core";
-import { LightDataset, Dataset } from "../models/dataset";
-import { Api } from "../api/api";
+import { LightDataset, Dataset } from "../../models/dataset";
+import { Api } from "../../api/api";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { ColumnNames } from "./ColumnNames";
 
 const service = new Api();
 
@@ -50,8 +51,9 @@ export const Home: React.FC = () => {
       });
   }, []);
 
+  // TODO: Find a way to avoid add this method to all cells from the row (except the column names)
   const onRowSelect = (
-    event: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
+    event: React.MouseEvent<HTMLTableHeaderCellElement, MouseEvent>,
     id: number
   ) => {
     event.preventDefault();
@@ -91,7 +93,12 @@ export const Home: React.FC = () => {
               <TableCell className={classes.tableHeadCell}>ID</TableCell>
               <TableCell className={classes.tableHeadCell}>Date</TableCell>
               <TableCell className={classes.tableHeadCell}>Name</TableCell>
-              <TableCell className={classes.tableHeadCell}>Rows number</TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                Rows number
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                Column names
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,15 +106,27 @@ export const Home: React.FC = () => {
               return (
                 <TableRow
                   key={v.id}
-                  onClick={(e) => onRowSelect(e, v.id)}
                   selected={datasetSelected && datasetSelected.id === v.id}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    onClick={(e) => onRowSelect(e, v.id)}
+                  >
                     {v.id}
                   </TableCell>
-                  <TableCell>{moment.unix(v.date).format()}</TableCell>
-                  <TableCell>{v.name}</TableCell>
-                  <TableCell>{v.rowsNumber}</TableCell>
+                  <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                    {moment.unix(v.date).format()}
+                  </TableCell>
+                  <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                    {v.name}
+                  </TableCell>
+                  <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                    {v.rowsNumber}
+                  </TableCell>
+                  <TableCell>
+                    <ColumnNames names={v.columnNames} />
+                  </TableCell>
                 </TableRow>
               );
             })}

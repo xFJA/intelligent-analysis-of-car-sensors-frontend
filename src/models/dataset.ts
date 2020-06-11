@@ -18,6 +18,7 @@ export interface LightDataset {
   date: number;
   name: string;
   rowsNumber: number;
+  columnNames: string;
 }
 
 export interface Log {
