@@ -11,6 +11,8 @@ import {
   TableBody,
   Divider,
   IconButton,
+  Typography,
+  withStyles,
 } from "@material-ui/core";
 import { LightDataset, Dataset } from "../../models/dataset";
 import { Api } from "../../api/api";
@@ -25,22 +27,41 @@ const service = new Api();
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: 50,
       backgroundColor: theme.palette.background.paper,
     },
-    table: {},
+    tableContainer: { padding: theme.spacing(6) },
     tableHeadCell: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
+      fontWeight: theme.typography.fontWeightBold,
+      fontSize: 20,
+    },
+    pair: {
+      background: theme.palette.common.white,
+    },
+    odd: {
+      background: theme.palette.primary.main,
+      opacity: 0.75,
+      color: theme.palette.common.white,
+    },
+    idColumn: {
+      fontWeight: theme.typography.fontWeightBold,
     },
   })
 );
+
+const WhiteTypography = withStyles({
+  root: {
+    color: "#FFFFFF",
+  },
+})(Typography);
 
 export const Home: React.FC = () => {
   const classes = useStyles();
 
   const [datasets, setDatasets] = useState<LightDataset[]>([]);
   const [datasetSelected, setDatasetSelected] = useState<Dataset>();
+  const [indexSelected, setIndexSelected] = useState<number>();
 
   useEffect(() => {
     service
@@ -63,6 +84,7 @@ export const Home: React.FC = () => {
     event.stopPropagation();
 
     setDatasetSelected(undefined);
+    setIndexSelected(id);
 
     service
       .getDataset(id)
@@ -103,67 +125,85 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell className={classes.tableHeadCell}>ID</TableCell>
-              <TableCell className={classes.tableHeadCell}>Date</TableCell>
-              <TableCell className={classes.tableHeadCell}>Name</TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                Rows number
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                Column names
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                Download CSV
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {datasets.map((v) => {
-              return (
-                <TableRow
-                  key={v.id}
-                  selected={datasetSelected && datasetSelected.id === v.id}
-                >
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    onClick={(e) => onRowSelect(e, v.id)}
+    <div className={classes.root}>
+      <div className={classes.tableContainer}>
+        <TableContainer component={Paper} elevation={12}>
+          <Table aria-label="datasets table">
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.tableHeadCell}>ID</TableCell>
+                <TableCell className={classes.tableHeadCell}>Date</TableCell>
+                <TableCell className={classes.tableHeadCell}>Name</TableCell>
+                <TableCell className={classes.tableHeadCell}>
+                  Rows number
+                </TableCell>
+                <TableCell className={classes.tableHeadCell}>
+                  Column names
+                </TableCell>
+                <TableCell className={classes.tableHeadCell}>
+                  Download CSV
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {datasets.map((v, i) => {
+                const TypographySelected = i % 2 ? WhiteTypography : Typography;
+                return (
+                  <TableRow
+                    key={v.id}
+                    selected={indexSelected === v.id}
+                    className={i % 2 ? classes.odd : classes.pair}
                   >
-                    {v.id}
-                  </TableCell>
-                  <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                    {moment.unix(v.date).format()}
-                  </TableCell>
-                  <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                    {v.name}
-                  </TableCell>
-                  <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                    {v.rowsNumber}
-                  </TableCell>
-                  <TableCell>
-                    <ColumnNames names={v.columnNames} />
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      edge="start"
-                      onClick={() => {
-                        onCSVDownload(v.id, v.name);
-                      }}
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      onClick={(e) => onRowSelect(e, v.id)}
                     >
-                      <DescriptionIcon fontSize="large" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                      <TypographySelected
+                        variant="h6"
+                        className={classes.idColumn}
+                      >
+                        {v.id}
+                      </TypographySelected>
+                    </TableCell>
+                    <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                      <TypographySelected variant="h6">
+                        {moment.unix(v.date).format()}{" "}
+                      </TypographySelected>
+                    </TableCell>
+                    <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                      <TypographySelected variant="h6">
+                        {v.name}
+                      </TypographySelected>
+                    </TableCell>
+                    <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                      <TypographySelected variant="h6">
+                        {v.rowsNumber}
+                      </TypographySelected>
+                    </TableCell>
+                    <TableCell>
+                      <ColumnNames names={v.columnNames} index={i} />
+                    </TableCell>
+                    <TableCell>
+                      <div style={{ color: "#FFFFFF" }}>
+                        <IconButton
+                          edge="start"
+                          color={i % 2 ? "inherit" : "primary"}
+                          onClick={() => {
+                            onCSVDownload(v.id, v.name);
+                          }}
+                        >
+                          <DescriptionIcon fontSize="large" />
+                        </IconButton>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
       <Divider />
       {datasetSelected && (
         <>

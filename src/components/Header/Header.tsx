@@ -9,9 +9,10 @@ import {
   createStyles,
   IconButton,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import HomeIcon from "@material-ui/icons/Home";
+import DriveEtaIcon from "@material-ui/icons/DriveEta";
 import { useHistory } from "react-router-dom";
+import { HeaderButton } from "./HeaderButton";
+import BackupIcon from "@material-ui/icons/Backup";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,15 +21,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     linkGroup: {
       marginLeft: 50,
-      marginRight: 20,
+      marginRight: theme.spacing(6),
       right: 0,
       position: "absolute",
     },
     button: {
       color: theme.palette.common.white,
+      textTransform: "none",
     },
     homeButton: {
       color: theme.palette.common.white,
+      height: 64,
+      width: 64,
     },
   })
 );
@@ -39,7 +43,7 @@ export const Header: React.FC = (_) => {
   let history = useHistory();
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" elevation={12}>
       <Toolbar>
         <IconButton
           edge="start"
@@ -47,7 +51,7 @@ export const Header: React.FC = (_) => {
             history.push("/");
           }}
         >
-          <HomeIcon className={classes.homeButton} />
+          <DriveEtaIcon className={classes.homeButton} />
         </IconButton>
         <Button
           className={classes.button}
@@ -55,17 +59,13 @@ export const Header: React.FC = (_) => {
             history.push("/");
           }}
         >
-          <Typography variant="h5">
+          <Typography variant="h4">
             Intelligent analysis of car's sensors
           </Typography>
         </Button>
 
         <div className={classes.linkGroup}>
-          <Link className={classes.link} to="/upload">
-            <Button className={classes.button}>
-              <Typography variant="subtitle1">Upload</Typography>
-            </Button>
-          </Link>
+          <HeaderButton name={"upload"} Icon={BackupIcon} />
         </div>
       </Toolbar>
     </AppBar>

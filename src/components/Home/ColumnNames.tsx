@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from "react";
 import Popover from "@material-ui/core/Popover";
 import Button from "@material-ui/core/Button";
-import { List, ListItem } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  Typography,
+  makeStyles,
+  Theme,
+  createStyles,
+  useTheme,
+} from "@material-ui/core";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    button: {
+      textTransform: "none",
+    },
+  })
+);
 
 interface Props {
   names: string;
+  index: number;
 }
 
 export const ColumnNames: React.FC<Props> = (props) => {
-  const { names } = props;
+  const classes = useStyles();
+  const theme = useTheme();
+
+  const { names, index } = props;
 
   const [namesList, setNamesList] = useState<string[]>([]);
 
@@ -36,10 +56,17 @@ export const ColumnNames: React.FC<Props> = (props) => {
       <Button
         aria-describedby={id}
         variant="contained"
-        color="primary"
+        style={{
+          backgroundColor:
+            index % 2 ? theme.palette.common.white : theme.palette.primary.main,
+          color:
+            index % 2 ? theme.palette.common.black : theme.palette.common.white,
+        }}
         onClick={handleClick}
+        size="small"
+        className={classes.button}
       >
-        Check {namesList.length} features
+        <Typography variant="h6">Check {namesList.length} features </Typography>
       </Button>
 
       <Popover

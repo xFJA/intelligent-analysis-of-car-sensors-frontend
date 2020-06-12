@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Home } from "./components/Home/Home";
 import { Upload } from "./components/Upload";
-import { Header } from "./components/Header";
+import { Header } from "./components/Header/Header";
 
 export const App: React.FC = () => {
 
