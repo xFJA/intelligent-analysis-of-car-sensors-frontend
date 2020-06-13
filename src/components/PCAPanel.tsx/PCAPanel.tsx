@@ -115,6 +115,17 @@ export const PCAPanel: React.FC<Props> = (props) => {
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
+            {dataset.wcssPlot && (
+              <PCAChart
+                title={"WCSS"}
+                description={
+                  "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid"
+                }
+                chart={`data:image/png;base64,${dataset.wcssPlot}`}
+              />
+            )}
+          </Grid>
+          <Grid item xs={6}>
             {dataset.twoFirstComponentsPlot && (
               <PCAChart
                 title={"Two Principal Components"}

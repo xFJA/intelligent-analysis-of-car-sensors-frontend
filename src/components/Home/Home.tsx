@@ -302,6 +302,7 @@ export const Home: React.FC = () => {
                           color={i % 2 ? "inherit" : "primary"}
                           onClick={() => {
                             onDelete(v.id);
+                            setDatasetSelected(undefined);
                           }}
                         >
                           <DeleteIcon fontSize="large" />

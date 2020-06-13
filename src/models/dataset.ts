@@ -11,6 +11,7 @@ export interface Dataset extends LightDataset {
   twoFirstComponentsPlot: string;
   componentsAndFeaturesPlot: string;
   explainedVarianceRatio: string;
+  wcssPlot: string;
 }
 
 export interface LightDataset {
