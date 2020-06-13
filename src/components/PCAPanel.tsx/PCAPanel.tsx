@@ -114,8 +114,19 @@ export const PCAPanel: React.FC<Props> = (props) => {
           )}
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <Grid item xs={6}>
-            {dataset.wcssPlot && (
+          {dataset.cumulativeExplainedVarianceRatioPlot && (
+            <Grid item xs={6}>
+              <PCAChart
+                title={"Cumulative explained variance ratio"}
+                description={
+                  "Amount of variance (y axis) depending on the number of components"
+                }
+                chart={`data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`}
+              />
+            </Grid>
+          )}
+          {dataset.wcssPlot && (
+            <Grid item xs={6}>
               <PCAChart
                 title={"WCSS"}
                 description={
@@ -123,19 +134,19 @@ export const PCAPanel: React.FC<Props> = (props) => {
                 }
                 chart={`data:image/png;base64,${dataset.wcssPlot}`}
               />
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            {dataset.twoFirstComponentsPlot && (
+            </Grid>
+          )}
+          {dataset.twoFirstComponentsPlot && (
+            <Grid item xs={6}>
               <PCAChart
                 title={"Two Principal Components"}
                 description={"Two Principal Components plot by clusters"}
                 chart={`data:image/png;base64,${dataset.twoFirstComponentsPlot}`}
               />
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            {dataset.componentsAndFeaturesPlot && (
+            </Grid>
+          )}
+          {dataset.componentsAndFeaturesPlot && (
+            <Grid item xs={6}>
               <PCAChart
                 title={"Components and Features"}
                 description={
@@ -143,8 +154,8 @@ export const PCAPanel: React.FC<Props> = (props) => {
                 }
                 chart={`data:image/png;base64,${dataset.componentsAndFeaturesPlot}`}
               />
-            )}
-          </Grid>
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </>
