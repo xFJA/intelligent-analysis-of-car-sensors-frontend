@@ -43,7 +43,7 @@ export const Header: React.FC = (_) => {
   let history = useHistory();
 
   return (
-    <AppBar position="static" elevation={12}>
+    <AppBar position="sticky" elevation={12}>
       <Toolbar>
         <IconButton
           edge="start"
