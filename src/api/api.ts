@@ -30,6 +30,12 @@ export class Api {
     });
   };
 
+  deleteDataset = async (id: number) => {
+    return await axios(`${BASE_URL}datasets/${id}`, {
+      method: "DELETE",
+    });
+  };
+
   getDatasetCSV = async (id: number) => {
     return await axios(`${BASE_URL}datasets/${id}/csv`).then(
       (response: any) => {

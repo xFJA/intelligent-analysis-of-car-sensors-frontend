@@ -23,6 +23,7 @@ import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { ColumnNames } from "./ColumnNames";
 import { saveAs } from "@progress/kendo-file-saver";
 import DescriptionIcon from "@material-ui/icons/Description";
+import DeleteIcon from "@material-ui/icons/Delete";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { PCAPanel } from "../PCAPanel.tsx/PCAPanel";
 
@@ -187,6 +188,30 @@ export const Home: React.FC = () => {
       });
   };
 
+  const onDelete = (id: number) => {
+    service
+      .deleteDataset(id)
+      .then(() => {
+        service
+          .getDatasets()
+          .then((res) => {
+            setDatasets(
+              res.data.sort((a, b) => {
+                return a.id - b.id;
+              })
+            );
+          })
+          .catch((e) => {
+            // TODO: Use snackbar component
+            console.warn(e);
+          });
+      })
+      .catch((e) => {
+        // TODO: Use snackbar component
+        console.warn(e);
+      });
+  };
+
   // Linear progress stuff
   const [value, setValue] = useState<number>(0);
 
@@ -212,6 +237,9 @@ export const Home: React.FC = () => {
                 </TableCell>
                 <TableCell className={classes.tableHeadCell}>
                   Download CSV
+                </TableCell>
+                <TableCell className={classes.tableHeadCell}>
+                  Delete CSV
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -264,6 +292,19 @@ export const Home: React.FC = () => {
                           }}
                         >
                           <DescriptionIcon fontSize="large" />
+                        </IconButton>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div style={{ color: "#FFFFFF" }}>
+                        <IconButton
+                          edge="start"
+                          color={i % 2 ? "inherit" : "primary"}
+                          onClick={() => {
+                            onDelete(v.id);
+                          }}
+                        >
+                          <DeleteIcon fontSize="large" />
                         </IconButton>
                       </div>
                     </TableCell>
