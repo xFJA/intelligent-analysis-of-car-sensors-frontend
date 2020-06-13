@@ -10,7 +10,7 @@ export interface Dataset extends LightDataset {
   logs: Log[];
   twoFirstComponentsPlot: string;
   componentsAndFeaturesPlot: string;
-  explainedVarianceRatio: number[];
+  explainedVarianceRatio: string;
 }
 
 export interface LightDataset {

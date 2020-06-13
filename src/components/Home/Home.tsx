@@ -20,11 +20,11 @@ import {
 import { LightDataset, Dataset } from "../../models/dataset";
 import { Api } from "../../api/api";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import { ColumnNames } from "./ColumnNames";
 import { saveAs } from "@progress/kendo-file-saver";
 import DescriptionIcon from "@material-ui/icons/Description";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { PCAPanel } from "../PCAPanel.tsx/PCAPanel";
 
 const service = new Api();
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
     tabHeader: {
       color: theme.palette.common.white,
       fontWeight: theme.typography.fontWeightBold,
-      fontSize: 20,
+      fontSize: 24,
       textTransform: "none",
     },
     linearProgress: {
@@ -114,6 +114,7 @@ export const Home: React.FC = () => {
   const [datasetSelected, setDatasetSelected] = useState<Dataset>();
   const [indexSelected, setIndexSelected] = useState<number>();
   const [progressOpen, setProgressOpen] = useState<boolean>(false);
+  const [pcaLoading, setPCALoading] = useState<boolean>(false);
 
   useEffect(() => {
     service
@@ -152,12 +153,16 @@ export const Home: React.FC = () => {
   };
 
   const onPCAButtonClick = (id: number) => {
+    setPCALoading(true);
+
     service
       .pca(id)
       .then((res) => {
+        setPCALoading(false);
         setDatasetSelected(res.data);
       })
       .catch((e) => {
+        setPCALoading(false);
         // TODO: Use snackbar component
         console.warn(e);
       });
@@ -298,28 +303,11 @@ export const Home: React.FC = () => {
               <BarGroup dataset={datasetSelected} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <Button
-                onClick={() => {
-                  onPCAButtonClick(datasetSelected?.id);
-                }}
-              >
-                Apply PCA to dataset
-              </Button>
-              {datasetSelected.twoFirstComponentsPlot && (
-                <img
-                  alt={"a"}
-                  src={`data:image/png;base64,${datasetSelected.twoFirstComponentsPlot}`}
-                />
-              )}
-              {datasetSelected.componentsAndFeaturesPlot && (
-                <img
-                  alt={"a"}
-                  src={`data:image/png;base64,${datasetSelected.componentsAndFeaturesPlot}`}
-                />
-              )}
-              {datasetSelected.explainedVarianceRatio && (
-                <h1>{datasetSelected.explainedVarianceRatio}</h1>
-              )}
+              <PCAPanel
+                dataset={datasetSelected}
+                onPCAButtonClick={onPCAButtonClick}
+                pcaLoading={pcaLoading}
+              />
             </TabPanel>
             <TabPanel value={value} index={2}>
               Predictions
