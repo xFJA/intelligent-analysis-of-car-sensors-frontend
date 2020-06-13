@@ -31,10 +31,6 @@ export const PCAChart: React.FC<Props> = (props) => {
 
   const { title, description, chart } = props;
 
-  if (!chart) {
-    return <></>;
-  }
-
   return (
     <Card className={classes.root} elevation={5}>
       <CardActionArea>

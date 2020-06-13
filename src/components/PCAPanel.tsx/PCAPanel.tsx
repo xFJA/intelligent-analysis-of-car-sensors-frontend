@@ -75,53 +75,64 @@ export const PCAPanel: React.FC<Props> = (props) => {
           )}
         </Grid>
         <Grid item xs={12} spacing={3}>
-          <Card className={classes.root} elevation={5}>
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Explained variance ratio
-                </Typography>
-                <Typography variant="body2" component="p">
-                  How much information (variance) corresponds to each of the
-                  Principal Components
-                </Typography>
-              </CardContent>
-              <Paper>
-                <List>
-                  {explainedVarianceRatioList.map((v, i) => {
-                    return (
-                      <div key={i}>
-                        <ListItem>
-                          <ListItemText
-                            primary={`Principal Component ${i + 1}`}
-                            secondary={
-                              (((v as unknown) as number) * 100).toString() +
-                              "%"
-                            }
-                          />
-                        </ListItem>
-                      </div>
-                    );
-                  })}
-                </List>
-              </Paper>
-            </CardActionArea>
-          </Card>
+          {explainedVarianceRatioList.length > 1 && (
+            <>
+              <Card className={classes.root} elevation={5}>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      Explained variance ratio
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                      How much information (variance) corresponds to each of the
+                      Principal Components
+                    </Typography>
+                  </CardContent>
+                  <Paper>
+                    <List>
+                      {explainedVarianceRatioList.map((v, i) => {
+                        return (
+                          <div key={i}>
+                            <ListItem>
+                              <ListItemText
+                                primary={`Principal Component ${i + 1}`}
+                                secondary={
+                                  (
+                                    ((v as unknown) as number) * 100
+                                  ).toString() + "%"
+                                }
+                              />
+                            </ListItem>
+                          </div>
+                        );
+                      })}
+                    </List>
+                  </Paper>
+                </CardActionArea>
+              </Card>
+            </>
+          )}
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
-            <PCAChart
-              title={"Two Principal Components"}
-              description={"Two Principal Components plot by clusters"}
-              chart={`data:image/png;base64,${dataset.twoFirstComponentsPlot}`}
-            />
+            {dataset.twoFirstComponentsPlot && (
+              <PCAChart
+                title={"Two Principal Components"}
+                description={"Two Principal Components plot by clusters"}
+                chart={`data:image/png;base64,${dataset.twoFirstComponentsPlot}`}
+              />
+            )}
           </Grid>
           <Grid item xs={6}>
-            <PCAChart
-              title={"Components and Features"}
-              description={"Chart about how the features affect each component"}
-              chart={`data:image/png;base64,${dataset.componentsAndFeaturesPlot}`}
-            />
+            {dataset.componentsAndFeaturesPlot && (
+              <PCAChart
+                title={"Components and Features"}
+                description={
+                  "Chart about how the features affect each component"
+                }
+                chart={`data:image/png;base64,${dataset.componentsAndFeaturesPlot}`}
+              />
+            )}
           </Grid>
         </Grid>
       </Grid>

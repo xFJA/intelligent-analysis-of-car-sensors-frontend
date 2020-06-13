@@ -159,7 +159,7 @@ export const Home: React.FC = () => {
       .pca(id)
       .then((res) => {
         setPCALoading(false);
-        setDatasetSelected(res.data);
+        setDatasetSelected(res);
       })
       .catch((e) => {
         setPCALoading(false);

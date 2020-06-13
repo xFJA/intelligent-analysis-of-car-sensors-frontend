@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DatasetsRequest, DatasetRequest } from "../models/dataset";
+import { DatasetsRequest, DatasetRequest, Dataset } from "../models/dataset";
 
 // TODO: Add the base url by config or env
 const BASE_URL: string = "http://localhost:8080/";
@@ -31,13 +31,15 @@ export class Api {
   };
 
   getDatasetCSV = async (id: number) => {
-    return await axios(`${BASE_URL}datasets/${id}/csv`).then((response: any) => {
-      if (response.status !== 200) throw new Error(JSON.stringify(Response));
-      return response.data;
-    });
+    return await axios(`${BASE_URL}datasets/${id}/csv`).then(
+      (response: any) => {
+        if (response.status !== 200) throw new Error(JSON.stringify(Response));
+        return response.data;
+      }
+    );
   };
 
-  pca = async (id: number): Promise<DatasetRequest> => {
+  pca = async (id: number): Promise<Dataset> => {
     return await axios(`${BASE_URL}pca/${id}`).then((response: any) => {
       if (response.status !== 200) throw new Error(JSON.stringify(Response));
       return response.data;
