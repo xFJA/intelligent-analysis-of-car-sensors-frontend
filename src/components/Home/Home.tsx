@@ -9,10 +9,13 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Divider,
   IconButton,
   Typography,
   withStyles,
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
 } from "@material-ui/core";
 import { LightDataset, Dataset } from "../../models/dataset";
 import { Api } from "../../api/api";
@@ -21,6 +24,7 @@ import Button from "@material-ui/core/Button";
 import { ColumnNames } from "./ColumnNames";
 import { saveAs } from "@progress/kendo-file-saver";
 import DescriptionIcon from "@material-ui/icons/Description";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const service = new Api();
 
@@ -47,6 +51,19 @@ const useStyles = makeStyles((theme: Theme) =>
     idColumn: {
       fontWeight: theme.typography.fontWeightBold,
     },
+    datasetSelected: {
+      padding: theme.spacing(6),
+    },
+    tabHeader: {
+      color: theme.palette.common.white,
+      fontWeight: theme.typography.fontWeightBold,
+      fontSize: 20,
+      textTransform: "none",
+    },
+    linearProgress: {
+      marginLeft: theme.spacing(6),
+      marginRight: theme.spacing(6),
+    },
   })
 );
 
@@ -56,12 +73,47 @@ const WhiteTypography = withStyles({
   },
 })(Typography);
 
+// Linear progress stuff
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: any) {
+  return {
+    id: `tab-${index}`,
+    "aria-controls": `tabpanel-${index}`,
+  };
+}
+
 export const Home: React.FC = () => {
   const classes = useStyles();
 
   const [datasets, setDatasets] = useState<LightDataset[]>([]);
   const [datasetSelected, setDatasetSelected] = useState<Dataset>();
   const [indexSelected, setIndexSelected] = useState<number>();
+  const [progressOpen, setProgressOpen] = useState<boolean>(false);
 
   useEffect(() => {
     service
@@ -85,10 +137,12 @@ export const Home: React.FC = () => {
 
     setDatasetSelected(undefined);
     setIndexSelected(id);
+    setProgressOpen(true);
 
     service
       .getDataset(id)
       .then((res) => {
+        setProgressOpen(false);
         setDatasetSelected(res.data);
       })
       .catch((e) => {
@@ -122,6 +176,13 @@ export const Home: React.FC = () => {
         // TODO: Use snackbar component
         console.warn(e);
       });
+  };
+
+  // Linear progress stuff
+  const [value, setValue] = useState<number>(0);
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
   };
 
   return (
@@ -204,35 +265,68 @@ export const Home: React.FC = () => {
           </Table>
         </TableContainer>
       </div>
-      <Divider />
-      {datasetSelected && (
-        <>
-          <Button
-            onClick={() => {
-              onPCAButtonClick(datasetSelected?.id);
-            }}
-          >
-            Apply PCA to dataset
-          </Button>
-          {datasetSelected.twoFirstComponentsPlot && (
-            <img
-              alt={"a"}
-              src={`data:image/png;base64,${datasetSelected.twoFirstComponentsPlot}`}
-            />
-          )}
-          {datasetSelected.componentsAndFeaturesPlot && (
-            <img
-              alt={"a"}
-              src={`data:image/png;base64,${datasetSelected.componentsAndFeaturesPlot}`}
-            />
-          )}
-          {datasetSelected.explainedVarianceRatio && (
-            <h1>{datasetSelected.explainedVarianceRatio}</h1>
-          )}
-        </>
+      {progressOpen && (
+        <LinearProgress className={classes.linearProgress} variant="query" />
       )}
-      <Divider />
-      {datasetSelected && <BarGroup dataset={datasetSelected} />}
+      {datasetSelected && (
+        <div className={classes.datasetSelected}>
+          <Paper elevation={12}>
+            <AppBar position="static">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="dataset tab"
+              >
+                <Tab
+                  label="Dataset charts"
+                  {...a11yProps(0)}
+                  className={classes.tabHeader}
+                />
+                <Tab
+                  label="PCA"
+                  {...a11yProps(1)}
+                  className={classes.tabHeader}
+                />
+                <Tab
+                  label="Predictions"
+                  {...a11yProps(2)}
+                  className={classes.tabHeader}
+                />
+              </Tabs>
+            </AppBar>
+            <TabPanel value={value} index={0}>
+              <BarGroup dataset={datasetSelected} />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <Button
+                onClick={() => {
+                  onPCAButtonClick(datasetSelected?.id);
+                }}
+              >
+                Apply PCA to dataset
+              </Button>
+              {datasetSelected.twoFirstComponentsPlot && (
+                <img
+                  alt={"a"}
+                  src={`data:image/png;base64,${datasetSelected.twoFirstComponentsPlot}`}
+                />
+              )}
+              {datasetSelected.componentsAndFeaturesPlot && (
+                <img
+                  alt={"a"}
+                  src={`data:image/png;base64,${datasetSelected.componentsAndFeaturesPlot}`}
+                />
+              )}
+              {datasetSelected.explainedVarianceRatio && (
+                <h1>{datasetSelected.explainedVarianceRatio}</h1>
+              )}
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              Predictions
+            </TabPanel>
+          </Paper>
+        </div>
+      )}
     </div>
   );
 };

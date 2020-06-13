@@ -15,62 +15,34 @@ export const Bar: React.FC<Props> = (props) => {
       data={data}
       keys={[dataKey]}
       indexBy="logID"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-      padding={0.3}
-      colors={{ scheme: "nivo" }}
-      defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
-      fill={[
-        {
-          match: {
-            id: "fries",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "sandwich",
-          },
-          id: "lines",
-        },
-      ]}
-      borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+      margin={{ top: 50, right: 300, bottom: 50, left: 300 }}
+      padding={0}
+      colors={["#3f51b5"]}
+      borderColor={{
+        from: "color",
+        modifiers: [
+          ["darker", 0.6],
+          ["opacity", 0.6],
+        ],
+      }}
       axisTop={null}
       axisRight={null}
       axisBottom={{
         tickSize: 5,
         tickPadding: 5,
-        tickRotation: -90,
-        legend: "log id",
+        tickRotation: 0,
+        legend: "Row",
         legendPosition: "middle",
         legendOffset: 32,
-        tickValues: [0, 25, 50, 100],
+        tickValues: [],
       }}
       axisLeft={{
         tickSize: 5,
-        tickPadding: 5,
+        tickPadding: 10,
         tickRotation: 0,
         legend: "value", // TODO: add measure unit
         legendPosition: "middle",
-        legendOffset: -40,
+        legendOffset: -54,
       }}
       labelSkipWidth={12}
       labelSkipHeight={12}
