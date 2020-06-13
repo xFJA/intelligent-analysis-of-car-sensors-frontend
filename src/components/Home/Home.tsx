@@ -120,7 +120,11 @@ export const Home: React.FC = () => {
     service
       .getDatasets()
       .then((res) => {
-        setDatasets(res.data);
+        setDatasets(
+          res.data.sort((a, b) => {
+            return a.id - b.id;
+          })
+        );
       })
       .catch((e) => {
         // TODO: Use snackbar component
