@@ -17,7 +17,7 @@ import {
   Tab,
   Box,
 } from "@material-ui/core";
-import { LightDataset, Dataset } from "../../models/dataset";
+import { LightDataset, Dataset, SensorPID } from "../../models/dataset";
 import { Api } from "../../api/api";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { ColumnNames } from "./ColumnNames";
@@ -26,6 +26,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import DeleteIcon from "@material-ui/icons/Delete";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { PCAPanel } from "../PCAPanel.tsx/PCAPanel";
+import { Record as DataRecord } from "./../../models/bar";
 
 const service = new Api();
 
@@ -116,6 +117,9 @@ export const Home: React.FC = () => {
   const [indexSelected, setIndexSelected] = useState<number>();
   const [progressOpen, setProgressOpen] = useState<boolean>(false);
   const [pcaLoading, setPCALoading] = useState<boolean>(false);
+  const [datasetTransformed, setDatasetTransformed] = useState<
+    Record<SensorPID, DataRecord[]>
+  >();
 
   useEffect(() => {
     service
@@ -150,6 +154,7 @@ export const Home: React.FC = () => {
       .then((res) => {
         setProgressOpen(false);
         setDatasetSelected(res.data);
+        setDatasetTransformed(transformDataset(res.data));
       })
       .catch((e) => {
         // TODO: Use snackbar component
@@ -217,6 +222,54 @@ export const Home: React.FC = () => {
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
+  };
+
+  const transformDataset = (
+    dataset: Dataset
+  ): Record<SensorPID, DataRecord[]> => {
+    // Transform dataset for charts
+    // TODO: Find a way to avoid initialize the map
+    let res: Record<SensorPID, DataRecord[]> = {
+      ENGINE_RPM: [],
+      VEHICLE_SPEED: [],
+      THROTTLE: [],
+      ENGINE_LOAD: [],
+      COOLANT_TEMPERATURE: [],
+      LONG_TERM_FUEL_TRIM_BANK_1: [],
+      SHORT_TERM_FUEL_TRIM_BANK_1: [],
+      INTAKE_MANIFOLD_PRESSURE: [],
+      FUEL_TANK: [],
+      ABSOLUTE_THROTTLE_B: [],
+      PEDAL_D: [],
+      PEDAL_E: [],
+      COMMAND_THROTTLE_ACTUATOR: [],
+      FUEL_AIR_COMMANDED_EQUIV_RATIO: [],
+      ABSOLUTE_BAROMETRIC_PRESSURE: [],
+      RELATIVE_THROTTLE_POSITION: [],
+      INTAKE_AIR_TEMP: [],
+      TIMING_ADVANCE: [],
+      CATALYST_TEMPERATURE_BANK1_SENSOR1: [],
+      CATALYST_TEMPERATURE_BANK1_SENSOR2: [],
+      CONTROL_MODULE_VOLTAGE: [],
+      COMMANDED_EVAPORATIVE_PURGE: [],
+      TIME_RUN_WITH_MIL_ON: [],
+      TIME_SINCE_TROUBLE_CODES_CLEARED: [],
+      DISTANCE_TRAVELED_WITH_MIL_ON: [],
+      WARM_UPS_SINCE_CODES_CLEARED: [],
+    };
+
+    for (let log of dataset.logs) {
+      for (let record of log.records) {
+        let dataRecord = res[(record.sensorPID as unknown) as SensorPID];
+        if (dataRecord) {
+          let newRecord: DataRecord = { logID: log.id, value: record.value };
+          newRecord[record.sensorPID as string] = record.value;
+          res[record.sensorPID as SensorPID].push(newRecord);
+        }
+      }
+    }
+
+    return res;
   };
 
   return (
@@ -319,7 +372,7 @@ export const Home: React.FC = () => {
       {progressOpen && (
         <LinearProgress className={classes.linearProgress} variant="query" />
       )}
-      {datasetSelected && (
+      {datasetSelected && datasetTransformed && (
         <div className={classes.datasetSelected}>
           <Paper elevation={12}>
             <AppBar position="static">
@@ -346,11 +399,12 @@ export const Home: React.FC = () => {
               </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-              <BarGroup dataset={datasetSelected} />
+              <BarGroup dataset={datasetTransformed} />
             </TabPanel>
             <TabPanel value={value} index={1}>
               <PCAPanel
                 dataset={datasetSelected}
+                datasetTransformed={datasetTransformed}
                 onPCAButtonClick={onPCAButtonClick}
                 pcaLoading={pcaLoading}
               />

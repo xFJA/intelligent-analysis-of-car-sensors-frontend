@@ -13,6 +13,7 @@ export interface Dataset extends LightDataset {
   explainedVarianceRatio: string;
   wcssPlot: string;
   cumulativeExplainedVarianceRatioPlot: string;
+  clusterList: string[];
 }
 
 export interface LightDataset {

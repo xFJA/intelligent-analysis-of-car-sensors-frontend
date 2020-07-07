@@ -1,5 +1,5 @@
 import React from "react";
-import { Dataset } from "../../models/dataset";
+import { Dataset, SensorPID } from "../../models/dataset";
 import {
   Button,
   Grid,
@@ -17,6 +17,8 @@ import {
 } from "@material-ui/core";
 import { PCAChart } from "./PCAChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { Record as DataRecord } from "./../../models/bar";
+import { PCACluster } from "./PCACluster";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,12 +37,13 @@ interface Props {
   dataset: Dataset;
   onPCAButtonClick: (id: number) => void;
   pcaLoading: boolean;
+  datasetTransformed: Record<SensorPID, DataRecord[]>;
 }
 
 export const PCAPanel: React.FC<Props> = (props) => {
   const classes = useStyles();
 
-  const { dataset, onPCAButtonClick, pcaLoading } = props;
+  const { dataset, onPCAButtonClick, pcaLoading, datasetTransformed } = props;
 
   let explainedVarianceRatio = dataset.explainedVarianceRatio.replace("[", "");
   explainedVarianceRatio = explainedVarianceRatio.replace("]", "");
@@ -156,6 +159,12 @@ export const PCAPanel: React.FC<Props> = (props) => {
               />
             </Grid>
           )}
+          <Grid item xs={12}>
+            <PCACluster
+              dataset={datasetTransformed}
+              clusterList={dataset.clusterList}
+            />
+          </Grid>
         </Grid>
       </Grid>
     </>
