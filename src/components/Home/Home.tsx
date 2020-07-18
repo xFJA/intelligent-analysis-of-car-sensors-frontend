@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.paper,
     },
     tableContainer: { padding: theme.spacing(6) },
+    tableToolbar: { backgroundColor: theme.palette.primary.main },
     tableHeadCell: {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
@@ -73,6 +74,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tabsDatasetID: {
       marginRight: 10,
+    },
+    tableTitle: {
+      color: theme.palette.common.white,
+      marginLeft: -10
     },
   })
 );
@@ -300,6 +305,11 @@ export const Home: React.FC = () => {
     <div className={classes.root}>
       <div className={classes.tableContainer}>
         <Paper elevation={12}>
+          <Toolbar className={classes.tableToolbar}>
+            <Typography variant="h5" className={classes.tableTitle}>
+              Datasets
+            </Typography>
+          </Toolbar>
           <TableContainer component={Paper}>
             <Table aria-label="datasets table">
               <TableHead>
