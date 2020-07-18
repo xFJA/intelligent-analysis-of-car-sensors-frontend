@@ -1,5 +1,6 @@
 export interface DatasetsRequest {
   data: LightDataset[];
+  datasetsNumber: number;
 }
 
 export interface DatasetRequest {

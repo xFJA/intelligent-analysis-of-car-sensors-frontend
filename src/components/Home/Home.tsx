@@ -16,6 +16,7 @@ import {
   Tabs,
   Tab,
   Box,
+  TablePagination,
 } from "@material-ui/core";
 import { LightDataset, Dataset, SensorPID } from "../../models/dataset";
 import { Api } from "../../api/api";
@@ -120,22 +121,26 @@ export const Home: React.FC = () => {
   const [datasetTransformed, setDatasetTransformed] = useState<
     Record<SensorPID, DataRecord[]>
   >();
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(3);
+  const [datasetsNumber, setDatasetsNumber] = useState<number>(0);
 
   useEffect(() => {
     service
-      .getDatasets()
+      .getDatasets(rowsPerPage, page)
       .then((res) => {
         setDatasets(
           res.data.sort((a, b) => {
             return a.id - b.id;
           })
         );
+        setDatasetsNumber(res.datasetsNumber);
       })
       .catch((e) => {
         // TODO: Use snackbar component
         console.warn(e);
       });
-  }, []);
+  }, [rowsPerPage, page]);
 
   // TODO: Find a way to avoid add this method to all cells from the row (except the column names)
   const onRowSelect = (
@@ -198,13 +203,14 @@ export const Home: React.FC = () => {
       .deleteDataset(id)
       .then(() => {
         service
-          .getDatasets()
+          .getDatasets(rowsPerPage, page)
           .then((res) => {
             setDatasets(
               res.data.sort((a, b) => {
                 return a.id - b.id;
               })
             );
+            setDatasetsNumber(res.datasetsNumber);
           })
           .catch((e) => {
             // TODO: Use snackbar component
@@ -215,6 +221,17 @@ export const Home: React.FC = () => {
         // TODO: Use snackbar component
         console.warn(e);
       });
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   // Linear progress stuff
@@ -275,99 +292,111 @@ export const Home: React.FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.tableContainer}>
-        <TableContainer component={Paper} elevation={12}>
-          <Table aria-label="datasets table">
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.tableHeadCell}>ID</TableCell>
-                <TableCell className={classes.tableHeadCell}>Date</TableCell>
-                <TableCell className={classes.tableHeadCell}>Name</TableCell>
-                <TableCell className={classes.tableHeadCell}>
-                  Rows number
-                </TableCell>
-                <TableCell className={classes.tableHeadCell}>
-                  Column names
-                </TableCell>
-                <TableCell className={classes.tableHeadCell}>
-                  Download CSV
-                </TableCell>
-                <TableCell className={classes.tableHeadCell}>
-                  Delete CSV
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {datasets.map((v, i) => {
-                const TypographySelected = i % 2 ? WhiteTypography : Typography;
-                return (
-                  <TableRow
-                    key={v.id}
-                    selected={indexSelected === v.id}
-                    className={i % 2 ? classes.odd : classes.pair}
-                  >
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      onClick={(e) => onRowSelect(e, v.id)}
+        <Paper elevation={12}>
+          <TableContainer component={Paper}>
+            <Table aria-label="datasets table">
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.tableHeadCell}>ID</TableCell>
+                  <TableCell className={classes.tableHeadCell}>Date</TableCell>
+                  <TableCell className={classes.tableHeadCell}>Name</TableCell>
+                  <TableCell className={classes.tableHeadCell}>
+                    Rows number
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell}>
+                    Column names
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell}>
+                    Download CSV
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell}>
+                    Delete CSV
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {datasets.map((v, i) => {
+                  const TypographySelected =
+                    i % 2 ? WhiteTypography : Typography;
+                  return (
+                    <TableRow
+                      key={v.id}
+                      selected={indexSelected === v.id}
+                      className={i % 2 ? classes.odd : classes.pair}
                     >
-                      <TypographySelected
-                        variant="h6"
-                        className={classes.idColumn}
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        onClick={(e) => onRowSelect(e, v.id)}
                       >
-                        {v.id}
-                      </TypographySelected>
-                    </TableCell>
-                    <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                      <TypographySelected variant="h6">
-                        {moment.unix(v.date).format()}{" "}
-                      </TypographySelected>
-                    </TableCell>
-                    <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                      <TypographySelected variant="h6">
-                        {v.name}
-                      </TypographySelected>
-                    </TableCell>
-                    <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                      <TypographySelected variant="h6">
-                        {v.rowsNumber}
-                      </TypographySelected>
-                    </TableCell>
-                    <TableCell>
-                      <ColumnNames names={v.columnNames} index={i} />
-                    </TableCell>
-                    <TableCell>
-                      <div style={{ color: "#FFFFFF" }}>
-                        <IconButton
-                          edge="start"
-                          color={i % 2 ? "inherit" : "primary"}
-                          onClick={() => {
-                            onCSVDownload(v.id, v.name);
-                          }}
+                        <TypographySelected
+                          variant="h6"
+                          className={classes.idColumn}
                         >
-                          <DescriptionIcon fontSize="large" />
-                        </IconButton>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div style={{ color: "#FFFFFF" }}>
-                        <IconButton
-                          edge="start"
-                          color={i % 2 ? "inherit" : "primary"}
-                          onClick={() => {
-                            onDelete(v.id);
-                            setDatasetSelected(undefined);
-                          }}
-                        >
-                          <DeleteIcon fontSize="large" />
-                        </IconButton>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                          {v.id}
+                        </TypographySelected>
+                      </TableCell>
+                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                        <TypographySelected variant="h6">
+                          {moment.unix(v.date).format()}{" "}
+                        </TypographySelected>
+                      </TableCell>
+                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                        <TypographySelected variant="h6">
+                          {v.name}
+                        </TypographySelected>
+                      </TableCell>
+                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                        <TypographySelected variant="h6">
+                          {v.rowsNumber}
+                        </TypographySelected>
+                      </TableCell>
+                      <TableCell>
+                        <ColumnNames names={v.columnNames} index={i} />
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ color: "#FFFFFF" }}>
+                          <IconButton
+                            edge="start"
+                            color={i % 2 ? "inherit" : "primary"}
+                            onClick={() => {
+                              onCSVDownload(v.id, v.name);
+                            }}
+                          >
+                            <DescriptionIcon fontSize="large" />
+                          </IconButton>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div style={{ color: "#FFFFFF" }}>
+                          <IconButton
+                            edge="start"
+                            color={i % 2 ? "inherit" : "primary"}
+                            onClick={() => {
+                              onDelete(v.id);
+                              setDatasetSelected(undefined);
+                            }}
+                          >
+                            <DeleteIcon fontSize="large" />
+                          </IconButton>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[3, 5, 7]}
+            component="div"
+            count={datasetsNumber}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
       </div>
       {progressOpen && (
         <LinearProgress className={classes.linearProgress} variant="query" />

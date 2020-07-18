@@ -6,11 +6,16 @@ const BASE_URL: string = "http://localhost:8080/";
 
 // TODO: Add type to fetch
 export class Api {
-  getDatasets = async (): Promise<DatasetsRequest> => {
-    return await axios(BASE_URL + "datasets").then((response: any) => {
-      if (response.status !== 200) throw new Error(JSON.stringify(Response));
-      return response.data;
-    });
+  getDatasets = async (
+    limit: number,
+    page: number
+  ): Promise<DatasetsRequest> => {
+    return await axios(`${BASE_URL}datasets?limit=${limit}&page=${page}`).then(
+      (response: any) => {
+        if (response.status !== 200) throw new Error(JSON.stringify(Response));
+        return response.data;
+      }
+    );
   };
 
   getDataset = async (id: number): Promise<DatasetRequest> => {
