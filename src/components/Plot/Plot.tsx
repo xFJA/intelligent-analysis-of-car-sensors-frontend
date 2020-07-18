@@ -22,7 +22,7 @@ export const Plot: React.FC<Props> = (props) => {
       yFormat={function (e) {
         return e + "";
       }}
-      colors={{ scheme: "blues" }}
+      colors={{ scheme: "category10" }}
       blendMode="multiply"
       axisTop={null}
       axisRight={null}
