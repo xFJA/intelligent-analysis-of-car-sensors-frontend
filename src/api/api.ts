@@ -50,8 +50,14 @@ export class Api {
     );
   };
 
-  pca = async (id: number): Promise<Dataset> => {
-    return await axios(`${BASE_URL}pca/${id}`).then((response: any) => {
+  pca = async (
+    id: number,
+    clustersNumber: number,
+    componentsNumber: number
+  ): Promise<Dataset> => {
+    return await axios(
+      `${BASE_URL}pca/${id}?clusters-number=${clustersNumber}&components-number=${componentsNumber}`
+    ).then((response: any) => {
       if (response.status !== 200) throw new Error(JSON.stringify(Response));
       return response.data;
     });

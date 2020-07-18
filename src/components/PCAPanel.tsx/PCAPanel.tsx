@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dataset, SensorPID } from "../../models/dataset";
 import {
   Button,
@@ -19,6 +19,10 @@ import { PCAChart } from "./PCAChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { Record as DataRecord } from "./../../models/bar";
 import { PCACluster } from "./PCACluster";
+import { Input } from "./PCAForm";
+
+const COMPONENTS_NUMBER = 3;
+const CLUSTERS_NUMBER = 5;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,12 +39,21 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   dataset: Dataset;
-  onPCAButtonClick: (id: number) => void;
+  onPCAButtonClick: (
+    id: number,
+    clustersNumber: number,
+    componentsNumber: number
+  ) => void;
   pcaLoading: boolean;
   datasetTransformed: Record<SensorPID, DataRecord[]>;
 }
 
 export const PCAPanel: React.FC<Props> = (props) => {
+  const [componentsNumber, setComponentsNumber] = useState<number>(
+    COMPONENTS_NUMBER
+  );
+  const [clusterNumber, setClusterNumber] = useState<number>(CLUSTERS_NUMBER);
+
   const classes = useStyles();
 
   const { dataset, onPCAButtonClick, pcaLoading, datasetTransformed } = props;
@@ -59,17 +72,35 @@ export const PCAPanel: React.FC<Props> = (props) => {
           spacing={3}
           style={{ flex: 1, flexDirection: "row" }}
         >
-          <Grid item xs={3} spacing={3}>
+          <Grid item>
             <Button
               color="primary"
               variant="contained"
               className={classes.applyPcaButton}
               onClick={() => {
-                onPCAButtonClick(dataset.id);
+                onPCAButtonClick(dataset.id, clusterNumber, componentsNumber);
               }}
             >
               Apply PCA to dataset
             </Button>
+          </Grid>
+          <Grid item>
+            <Input
+              min={2}
+              max={6}
+              value={COMPONENTS_NUMBER}
+              title={"Components number"}
+              onChange={setComponentsNumber}
+            />
+          </Grid>
+          <Grid item>
+            <Input
+              min={2}
+              max={6}
+              value={CLUSTERS_NUMBER}
+              title={"Clusters number"}
+              onChange={setClusterNumber}
+            />
           </Grid>
           {pcaLoading && (
             <Grid item xs={9} alignItems="center" justify="center">

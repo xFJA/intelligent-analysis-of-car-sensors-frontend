@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tableTitle: {
       color: theme.palette.common.white,
-      marginLeft: -10
+      marginLeft: -10,
     },
   })
 );
@@ -179,11 +179,15 @@ export const Home: React.FC = () => {
       });
   };
 
-  const onPCAButtonClick = (id: number) => {
+  const onPCAButtonClick = (
+    id: number,
+    clustersNumber: number,
+    componentsNumber: number
+  ) => {
     setPCALoading(true);
 
     service
-      .pca(id)
+      .pca(id, clustersNumber, componentsNumber)
       .then((res) => {
         setPCALoading(false);
         setDatasetSelected(res);
