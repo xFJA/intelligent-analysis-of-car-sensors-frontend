@@ -17,6 +17,7 @@ import {
   Tab,
   Box,
   TablePagination,
+  Toolbar,
 } from "@material-ui/core";
 import { LightDataset, Dataset, SensorPID } from "../../models/dataset";
 import { Api } from "../../api/api";
@@ -66,6 +67,12 @@ const useStyles = makeStyles((theme: Theme) =>
     linearProgress: {
       marginLeft: theme.spacing(6),
       marginRight: theme.spacing(6),
+    },
+    tabs: {
+      flexGrow: 1,
+    },
+    tabsDatasetID: {
+      marginRight: 10,
     },
   })
 );
@@ -405,27 +412,34 @@ export const Home: React.FC = () => {
         <div className={classes.datasetSelected}>
           <Paper elevation={12}>
             <AppBar position="static">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="dataset tab"
-              >
-                <Tab
-                  label="Dataset charts"
-                  {...a11yProps(0)}
-                  className={classes.tabHeader}
-                />
-                <Tab
-                  label="PCA"
-                  {...a11yProps(1)}
-                  className={classes.tabHeader}
-                />
-                <Tab
-                  label="Predictions"
-                  {...a11yProps(2)}
-                  className={classes.tabHeader}
-                />
-              </Tabs>
+              <Toolbar>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="dataset tab"
+                  className={classes.tabs}
+                >
+                  <Tab
+                    label="Dataset charts"
+                    {...a11yProps(0)}
+                    className={classes.tabHeader}
+                  />
+                  <Tab
+                    label="PCA"
+                    {...a11yProps(1)}
+                    className={classes.tabHeader}
+                  />
+                  <Tab
+                    label="Predictions"
+                    {...a11yProps(2)}
+                    className={classes.tabHeader}
+                  />
+                </Tabs>
+                <Typography variant="h5" className={classes.tabsDatasetID}>
+                  {datasetSelected.id}:
+                </Typography>
+                <Typography variant="h6">{datasetSelected.name}</Typography>
+              </Toolbar>
             </AppBar>
             <TabPanel value={value} index={0}>
               <BarGroup dataset={datasetTransformed} />
