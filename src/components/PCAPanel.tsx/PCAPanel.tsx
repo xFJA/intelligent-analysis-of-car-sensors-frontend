@@ -159,12 +159,14 @@ export const PCAPanel: React.FC<Props> = (props) => {
               />
             </Grid>
           )}
-          <Grid item xs={12}>
-            <PCACluster
-              dataset={datasetTransformed}
-              clusterList={dataset.clusterList}
-            />
-          </Grid>
+          {dataset.clusterList && (
+            <Grid item xs={12}>
+              <PCACluster
+                dataset={datasetTransformed}
+                clusterList={dataset.clusterList}
+              />
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </>
