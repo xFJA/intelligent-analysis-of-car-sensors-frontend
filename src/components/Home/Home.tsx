@@ -246,8 +246,8 @@ export const Home: React.FC = () => {
     setPage(0);
   };
 
-  // Linear progress stuff
-  const [value, setValue] = useState<number>(0);
+  // Tabs selection
+  const [value, setValue] = useState<number>(1);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
