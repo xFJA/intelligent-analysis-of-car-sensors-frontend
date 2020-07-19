@@ -15,20 +15,21 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
       textTransform: "none",
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
     },
   })
 );
 
 interface Props {
   names: string;
-  index: number;
 }
 
 export const ColumnNames: React.FC<Props> = (props) => {
   const classes = useStyles();
   const theme = useTheme();
 
-  const { names, index } = props;
+  const { names } = props;
 
   const [namesList, setNamesList] = useState<string[]>([]);
 
@@ -56,12 +57,6 @@ export const ColumnNames: React.FC<Props> = (props) => {
       <Button
         aria-describedby={id}
         variant="contained"
-        style={{
-          backgroundColor:
-            index % 2 ? theme.palette.common.white : theme.palette.primary.main,
-          color:
-            index % 2 ? theme.palette.common.black : theme.palette.common.white,
-        }}
         onClick={handleClick}
         size="small"
         className={classes.button}

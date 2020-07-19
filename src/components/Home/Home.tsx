@@ -11,7 +11,6 @@ import {
   TableBody,
   IconButton,
   Typography,
-  withStyles,
   AppBar,
   Tabs,
   Tab,
@@ -51,8 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
       background: theme.palette.common.white,
     },
     odd: {
-      background: theme.palette.primary.main,
-      opacity: 0.75,
+      background: theme.palette.grey[100],
       color: theme.palette.common.white,
     },
     idColumn: {
@@ -89,12 +87,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-const WhiteTypography = withStyles({
-  root: {
-    color: "#FFFFFF",
-  },
-})(Typography);
 
 // Linear progress stuff
 interface TabPanelProps {
@@ -326,30 +318,34 @@ export const Home: React.FC = () => {
             <Table aria-label="datasets table">
               <TableHead>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>ID</TableCell>
-                  <TableCell className={classes.tableHeadCell}>Date</TableCell>
-                  <TableCell className={classes.tableHeadCell}>Name</TableCell>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell className={classes.tableHeadCell} align="center">
+                    ID
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell} align="center">
+                    Date
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell} align="center">
+                    Name
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell} align="center">
                     Rows number
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
-                    Column names
-                  </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell className={classes.tableHeadCell} align="center">
                     PCA applied
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell className={classes.tableHeadCell} align="center">
+                    Column names
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell} align="center">
                     Download CSV
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell className={classes.tableHeadCell} align="center">
                     Delete CSV
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {datasets.map((v, i) => {
-                  const TypographySelected =
-                    i % 2 ? WhiteTypography : Typography;
                   return (
                     <TableRow
                       key={v.id}
@@ -360,59 +356,71 @@ export const Home: React.FC = () => {
                         component="th"
                         scope="row"
                         onClick={(e) => onRowSelect(e, v.id)}
+                        align="center"
                       >
-                        <TypographySelected
-                          variant="h6"
-                          className={classes.idColumn}
-                        >
+                        <Typography variant="h6" className={classes.idColumn}>
                           {v.id}
-                        </TypographySelected>
+                        </Typography>
                       </TableCell>
-                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                        <TypographySelected variant="h6">
+                      <TableCell
+                        onClick={(e) => onRowSelect(e, v.id)}
+                        align="center"
+                      >
+                        <Typography variant="h6">
                           {moment.unix(v.date).format()}{" "}
-                        </TypographySelected>
+                        </Typography>
                       </TableCell>
-                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                        <TypographySelected variant="h6">
-                          {v.name}
-                        </TypographySelected>
+                      <TableCell
+                        onClick={(e) => onRowSelect(e, v.id)}
+                        align="center"
+                      >
+                        <Typography variant="h6">{v.name}</Typography>
                       </TableCell>
-                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                        <TypographySelected variant="h6">
-                          {v.rowsNumber}
-                        </TypographySelected>
+                      <TableCell
+                        onClick={(e) => onRowSelect(e, v.id)}
+                        align="center"
+                      >
+                        <Typography variant="h6">{v.rowsNumber}</Typography>
                       </TableCell>
-                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
-                        <TypographySelected variant="h6">
+                      <TableCell
+                        onClick={(e) => onRowSelect(e, v.id)}
+                        align="center"
+                      >
+                        <Typography variant="h6">
                           {v.pcaApplied ? (
-                            <CheckCircleIcon className={classes.checkIcon} fontSize="large" />
+                            <CheckCircleIcon
+                              className={classes.checkIcon}
+                              fontSize="large"
+                            />
                           ) : (
-                            <CancelIcon className={classes.cancelIcon} fontSize="large"/>
+                            <CancelIcon
+                              className={classes.cancelIcon}
+                              fontSize="large"
+                            />
                           )}
-                        </TypographySelected>
+                        </Typography>
                       </TableCell>
-                      <TableCell>
-                        <ColumnNames names={v.columnNames} index={i} />
+                      <TableCell align="center">
+                        <ColumnNames names={v.columnNames} />
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <div style={{ color: "#FFFFFF" }}>
                           <IconButton
                             edge="start"
-                            color={i % 2 ? "inherit" : "primary"}
                             onClick={() => {
                               onCSVDownload(v.id, v.name);
                             }}
+                            color="primary"
                           >
                             <DescriptionIcon fontSize="large" />
                           </IconButton>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <div style={{ color: "#FFFFFF" }}>
                           <IconButton
                             edge="start"
-                            color={i % 2 ? "inherit" : "primary"}
+                            color="primary"
                             onClick={() => {
                               onDelete(v.id);
                               setDatasetSelected(undefined);
