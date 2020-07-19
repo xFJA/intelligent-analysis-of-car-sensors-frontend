@@ -9,6 +9,7 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core";
+import { Chart } from "../../models/pdf";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,14 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// TODO: use a PCA Chart interface to move common stuff
-interface Props {
-  title: string;
-  description: string;
-  chart: string;
-}
-
-export const PCAChart: React.FC<Props> = (props) => {
+export const PCAChart: React.FC<Chart> = (props) => {
   const classes = useStyles();
 
   const { title, description, chart } = props;

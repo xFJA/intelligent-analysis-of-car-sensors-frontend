@@ -14,12 +14,19 @@ import {
   Paper,
   Theme,
   createStyles,
+  Dialog,
 } from "@material-ui/core";
 import { PCAChart } from "./PCAChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { Record as DataRecord } from "./../../models/bar";
 import { PCACluster } from "./PCACluster";
 import { Input } from "./PCAForm";
+import { PDFViewer } from "@react-pdf/renderer";
+import { PCADocument } from "./PCADocument";
+import { Chart } from "../../models/pdf";
+import DescriptionIcon from "@material-ui/icons/Description";
+import ShowChartIcon from "@material-ui/icons/ShowChart";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const COMPONENTS_NUMBER = 3;
 const CLUSTERS_NUMBER = 5;
@@ -30,9 +37,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
-    applyPcaButton: {
+    pcaButton: {
       textTransform: "none",
       fontSize: 20,
+    },
+    pdf: {
+      height: "80vh",
+      width: "40vw",
+    },
+    cancel: {
+      backgroundColor: theme.palette.error.main,
+      color: theme.palette.common.white,
+      float: "right",
     },
   })
 );
@@ -53,6 +69,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
     COMPONENTS_NUMBER
   );
   const [clusterNumber, setClusterNumber] = useState<number>(CLUSTERS_NUMBER);
+  const [openDocument, setOpenDocument] = useState<boolean>(false);
 
   const classes = useStyles();
 
@@ -61,6 +78,35 @@ export const PCAPanel: React.FC<Props> = (props) => {
   let explainedVarianceRatio = dataset.explainedVarianceRatio.replace("[", "");
   explainedVarianceRatio = explainedVarianceRatio.replace("]", "");
   const explainedVarianceRatioList = explainedVarianceRatio.split(",");
+
+  // Generate PCA pdf document data
+  let pcaDocumentData: Chart[] = [];
+
+  pcaDocumentData.push({
+    title: "Cumulative explained variance ratio",
+    description:
+      "Amount of variance (y axis) depending on the number of components",
+    chart: `data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`,
+  });
+
+  pcaDocumentData.push({
+    title: "WCSS",
+    description:
+      "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid",
+    chart: `data:image/png;base64,${dataset.wcssPlot}`,
+  });
+
+  pcaDocumentData.push({
+    title: "Two Principal Components",
+    description: "Two Principal Components plot by clusters",
+    chart: `data:image/png;base64,${dataset.twoFirstComponentsPlot}`,
+  });
+
+  pcaDocumentData.push({
+    title: "Components and Features",
+    description: "Chart about how the features affect each component",
+    chart: `data:image/png;base64,${dataset.componentsAndFeaturesPlot}`,
+  });
 
   return (
     <>
@@ -76,14 +122,47 @@ export const PCAPanel: React.FC<Props> = (props) => {
             <Button
               color="primary"
               variant="contained"
-              className={classes.applyPcaButton}
+              className={classes.pcaButton}
               onClick={() => {
                 onPCAButtonClick(dataset.id, clusterNumber, componentsNumber);
               }}
+              endIcon={<ShowChartIcon />}
             >
               Apply PCA to dataset
             </Button>
           </Grid>
+          {dataset.componentsAndFeaturesPlot &&
+            dataset.twoFirstComponentsPlot &&
+            dataset.wcssPlot &&
+            dataset.cumulativeExplainedVarianceRatioPlot && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenDocument(!openDocument)}
+                  className={classes.pcaButton}
+                  endIcon={<DescriptionIcon />}
+                >
+                  Generate charts document
+                </Button>
+                <Dialog open={openDocument} maxWidth={"lg"}>
+                  <Paper>
+                    <Button
+                      onClick={() => setOpenDocument(!openDocument)}
+                      endIcon={<CancelIcon />}
+                      className={classes.cancel}
+                      variant="contained"
+                      fullWidth={true}
+                    >
+                      CLOSE
+                    </Button>
+                  </Paper>
+                  <PDFViewer className={classes.pdf}>
+                    {PCADocument(pcaDocumentData)}
+                  </PDFViewer>
+                </Dialog>
+              </Grid>
+            )}
           <Grid item>
             <Input
               min={2}
