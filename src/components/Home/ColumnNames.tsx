@@ -8,7 +8,6 @@ import {
   makeStyles,
   Theme,
   createStyles,
-  useTheme,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,7 +26,6 @@ interface Props {
 
 export const ColumnNames: React.FC<Props> = (props) => {
   const classes = useStyles();
-  const theme = useTheme();
 
   const { names } = props;
 

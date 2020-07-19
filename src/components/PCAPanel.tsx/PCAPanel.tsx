@@ -82,31 +82,33 @@ export const PCAPanel: React.FC<Props> = (props) => {
   // Generate PCA pdf document data
   let pcaChartsData: Chart[] = [];
 
-  pcaChartsData.push({
-    title: "Cumulative explained variance ratio",
-    description:
-      "Amount of variance (y axis) depending on the number of components",
-    chart: `data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`,
-  });
+  if (dataset.pcaApplied) {
+    pcaChartsData.push({
+      title: "Cumulative explained variance ratio",
+      description:
+        "Amount of variance (y axis) depending on the number of components",
+      chart: `data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`,
+    });
 
-  pcaChartsData.push({
-    title: "WCSS",
-    description:
-      "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid",
-    chart: `data:image/png;base64,${dataset.wcssPlot}`,
-  });
+    pcaChartsData.push({
+      title: "WCSS",
+      description:
+        "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid",
+      chart: `data:image/png;base64,${dataset.wcssPlot}`,
+    });
 
-  pcaChartsData.push({
-    title: "Two Principal Components",
-    description: "Two Principal Components plot by clusters",
-    chart: `data:image/png;base64,${dataset.twoFirstComponentsPlot}`,
-  });
+    pcaChartsData.push({
+      title: "Two Principal Components",
+      description: "Two Principal Components plot by clusters",
+      chart: `data:image/png;base64,${dataset.twoFirstComponentsPlot}`,
+    });
 
-  pcaChartsData.push({
-    title: "Components and Features",
-    description: "Chart about how the features affect each component",
-    chart: `data:image/png;base64,${dataset.componentsAndFeaturesPlot}`,
-  });
+    pcaChartsData.push({
+      title: "Components and Features",
+      description: "Chart about how the features affect each component",
+      chart: `data:image/png;base64,${dataset.componentsAndFeaturesPlot}`,
+    });
+  }
 
   return (
     <>
