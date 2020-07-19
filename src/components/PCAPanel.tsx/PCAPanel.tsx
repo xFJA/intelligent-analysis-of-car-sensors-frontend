@@ -80,29 +80,29 @@ export const PCAPanel: React.FC<Props> = (props) => {
   const explainedVarianceRatioList = explainedVarianceRatio.split(",");
 
   // Generate PCA pdf document data
-  let pcaDocumentData: Chart[] = [];
+  let pcaChartsData: Chart[] = [];
 
-  pcaDocumentData.push({
+  pcaChartsData.push({
     title: "Cumulative explained variance ratio",
     description:
       "Amount of variance (y axis) depending on the number of components",
     chart: `data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`,
   });
 
-  pcaDocumentData.push({
+  pcaChartsData.push({
     title: "WCSS",
     description:
       "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid",
     chart: `data:image/png;base64,${dataset.wcssPlot}`,
   });
 
-  pcaDocumentData.push({
+  pcaChartsData.push({
     title: "Two Principal Components",
     description: "Two Principal Components plot by clusters",
     chart: `data:image/png;base64,${dataset.twoFirstComponentsPlot}`,
   });
 
-  pcaDocumentData.push({
+  pcaChartsData.push({
     title: "Components and Features",
     description: "Chart about how the features affect each component",
     chart: `data:image/png;base64,${dataset.componentsAndFeaturesPlot}`,
@@ -158,7 +158,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
                     </Button>
                   </Paper>
                   <PDFViewer className={classes.pdf}>
-                    {PCADocument(pcaDocumentData)}
+                    {PCADocument(pcaChartsData)}
                   </PDFViewer>
                 </Dialog>
               </Grid>
@@ -227,48 +227,17 @@ export const PCAPanel: React.FC<Props> = (props) => {
           )}
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          {dataset.cumulativeExplainedVarianceRatioPlot && (
-            <Grid item xs={6}>
-              <PCAChart
-                title={"Cumulative explained variance ratio"}
-                description={
-                  "Amount of variance (y axis) depending on the number of components"
-                }
-                chart={`data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`}
-              />
-            </Grid>
-          )}
-          {dataset.wcssPlot && (
-            <Grid item xs={6}>
-              <PCAChart
-                title={"WCSS"}
-                description={
-                  "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid"
-                }
-                chart={`data:image/png;base64,${dataset.wcssPlot}`}
-              />
-            </Grid>
-          )}
-          {dataset.twoFirstComponentsPlot && (
-            <Grid item xs={6}>
-              <PCAChart
-                title={"Two Principal Components"}
-                description={"Two Principal Components plot by clusters"}
-                chart={`data:image/png;base64,${dataset.twoFirstComponentsPlot}`}
-              />
-            </Grid>
-          )}
-          {dataset.componentsAndFeaturesPlot && (
-            <Grid item xs={6}>
-              <PCAChart
-                title={"Components and Features"}
-                description={
-                  "Chart about how the features affect each component"
-                }
-                chart={`data:image/png;base64,${dataset.componentsAndFeaturesPlot}`}
-              />
-            </Grid>
-          )}
+          {pcaChartsData.map((c, i) => {
+            return (
+              <Grid item xs={6}>
+                <PCAChart
+                  title={c.title}
+                  description={c.description}
+                  chart={c.chart}
+                />
+              </Grid>
+            );
+          })}
           {dataset.clusterList && (
             <Grid item xs={12}>
               <PCACluster
