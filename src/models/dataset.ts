@@ -23,6 +23,7 @@ export interface LightDataset {
   name: string;
   rowsNumber: number;
   columnNames: string;
+  pcaApplied: boolean;
 }
 
 export interface Log {

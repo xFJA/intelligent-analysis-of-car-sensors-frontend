@@ -29,6 +29,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { PCAPanel } from "../PCAPanel.tsx/PCAPanel";
 import { Record as DataRecord } from "./../../models/bar";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const service = new Api();
 
@@ -78,6 +80,12 @@ const useStyles = makeStyles((theme: Theme) =>
     tableTitle: {
       color: theme.palette.common.white,
       marginLeft: -10,
+    },
+    checkIcon: {
+      color: theme.palette.success.main,
+    },
+    cancelIcon: {
+      color: theme.palette.error.main,
     },
   })
 );
@@ -328,6 +336,9 @@ export const Home: React.FC = () => {
                     Column names
                   </TableCell>
                   <TableCell className={classes.tableHeadCell}>
+                    PCA applied
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell}>
                     Download CSV
                   </TableCell>
                   <TableCell className={classes.tableHeadCell}>
@@ -370,6 +381,15 @@ export const Home: React.FC = () => {
                       <TableCell onClick={(e) => onRowSelect(e, v.id)}>
                         <TypographySelected variant="h6">
                           {v.rowsNumber}
+                        </TypographySelected>
+                      </TableCell>
+                      <TableCell onClick={(e) => onRowSelect(e, v.id)}>
+                        <TypographySelected variant="h6">
+                          {v.pcaApplied ? (
+                            <CheckCircleIcon className={classes.checkIcon} fontSize="large" />
+                          ) : (
+                            <CancelIcon className={classes.cancelIcon} fontSize="large"/>
+                          )}
                         </TypographySelected>
                       </TableCell>
                       <TableCell>
