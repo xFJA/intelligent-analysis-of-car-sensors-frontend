@@ -15,6 +15,9 @@ import {
   Theme,
   createStyles,
   Dialog,
+  ListItemAvatar,
+  Avatar,
+  ListSubheader,
 } from "@material-ui/core";
 import { PCAChart } from "./PCAChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -50,6 +53,18 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.common.white,
       float: "right",
     },
+    moreImportantFeaturesList: {
+      height: 200,
+      overflowY: "scroll",
+    },
+    moreImportantFeaturesListContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-around",
+    },
+    moreImportantFeaturesListAvatar: {
+      backgroundColor: theme.palette.secondary.main,
+    },
   })
 );
 
@@ -78,6 +93,15 @@ export const PCAPanel: React.FC<Props> = (props) => {
   let explainedVarianceRatio = dataset.explainedVarianceRatio.replace("[", "");
   explainedVarianceRatio = explainedVarianceRatio.replace("]", "");
   const explainedVarianceRatioList = explainedVarianceRatio.split(",");
+
+  // TODO: Add an interface to parse this property
+  const moreImportantFeaturesMap = JSON.parse(dataset.moreImportantFeatures);
+  let moreImportantFeatures = [];
+  for (let key in moreImportantFeaturesMap) {
+    const moreImportantFeature = Object.entries(moreImportantFeaturesMap[key]);
+    moreImportantFeatures.push(moreImportantFeature);
+  }
+  console.log(moreImportantFeatures);
 
   // Generate PCA pdf document data
   let pcaChartsData: Chart[] = [];
@@ -228,6 +252,59 @@ export const PCAPanel: React.FC<Props> = (props) => {
             </>
           )}
         </Grid>
+        {moreImportantFeatures && (
+          <Grid item xs={12} spacing={3}>
+            <Card className={classes.root} elevation={5}>
+              <CardActionArea>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    More important features for principal components
+                  </Typography>
+                  <Typography variant="body2" component="p">
+                    The most contributory features for each principal component.
+                    Each value represents the percentage of the coeficient for
+                    the given feature. It corresponds to the first coeficient
+                    percetanges that their sum is equal or greater to 90%
+                  </Typography>
+                </CardContent>
+                <Paper className={classes.moreImportantFeaturesListContainer}>
+                  {moreImportantFeatures.map((v, i) => {
+                    // TODO: Fix subheader solapation when list is scrolling
+                    return (
+                      <List
+                        className={classes.moreImportantFeaturesList}
+                        subheader={
+                          <ListSubheader component="div">
+                            {`Principal Component ${i + 1}`}
+                          </ListSubheader>
+                        }
+                        key={i}
+                      >
+                        {v.map((f, j) => {
+                          return (
+                            <ListItem key={j}>
+                              <ListItemAvatar>
+                                <Avatar
+                                  className={
+                                    classes.moreImportantFeaturesListAvatar
+                                  }
+                                >{`${j + 1}º`}</Avatar>
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={f[0]}
+                                secondary={`${(f[1] as number).toFixed(3)} %`}
+                              />
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    );
+                  })}
+                </Paper>
+              </CardActionArea>
+            </Card>
+          </Grid>
+        )}
         <Grid container item xs={12} spacing={3}>
           {pcaChartsData.map((c, i) => {
             return (

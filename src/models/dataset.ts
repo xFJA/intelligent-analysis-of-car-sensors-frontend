@@ -15,6 +15,7 @@ export interface Dataset extends LightDataset {
   wcssPlot: string;
   cumulativeExplainedVarianceRatioPlot: string;
   clusterList: string[];
+  moreImportantFeatures: string; // TODO: Use the proper interface here
 }
 
 export interface LightDataset {
@@ -29,11 +30,11 @@ export interface LightDataset {
 export interface Log {
   id: number;
   time: number;
-  records: Record[];
+  records: DatasetRecord[];
 }
 
 // TODO: set to SensorPID enum when the api be ready
-export interface Record {
+export interface DatasetRecord {
   id: number;
   value: number;
   sensorPID: string;
