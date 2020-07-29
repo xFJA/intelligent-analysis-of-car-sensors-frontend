@@ -95,13 +95,16 @@ export const PCAPanel: React.FC<Props> = (props) => {
   const explainedVarianceRatioList = explainedVarianceRatio.split(",");
 
   // TODO: Add an interface to parse this property
-  const moreImportantFeaturesMap = JSON.parse(dataset.moreImportantFeatures);
   let moreImportantFeatures = [];
-  for (let key in moreImportantFeaturesMap) {
-    const moreImportantFeature = Object.entries(moreImportantFeaturesMap[key]);
-    moreImportantFeatures.push(moreImportantFeature);
+  if (dataset.moreImportantFeatures) {
+    const moreImportantFeaturesMap = JSON.parse(dataset.moreImportantFeatures);
+    for (let key in moreImportantFeaturesMap) {
+      const moreImportantFeature = Object.entries(
+        moreImportantFeaturesMap[key]
+      );
+      moreImportantFeatures.push(moreImportantFeature);
+    }
   }
-  console.log(moreImportantFeatures);
 
   // Generate PCA pdf document data
   let pcaChartsData: Chart[] = [];
