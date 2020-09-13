@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const PCAChart: React.FC<Chart> = (props) => {
+export const ClassificationChart: React.FC<Chart> = (props) => {
   const classes = useStyles();
 
   const { title, description, chart } = props;

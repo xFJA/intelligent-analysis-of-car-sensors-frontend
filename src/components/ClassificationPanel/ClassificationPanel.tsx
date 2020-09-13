@@ -19,13 +19,13 @@ import {
   Avatar,
   ListSubheader,
 } from "@material-ui/core";
-import { PCAChart } from "./PCAChart";
+import { ClassificationChart } from "./ClassificationChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { Record as DataRecord } from "./../../models/bar";
-import { PCACluster } from "./PCACluster";
-import { Input } from "./PCAForm";
+import { Record as DataRecord } from "../../models/bar";
+import { ClassificationCluster } from "./ClassificationCluster";
+import { Input } from "./ClassificationForm";
 import { PDFViewer } from "@react-pdf/renderer";
-import { PCADocument } from "./PCADocument";
+import { ClassificationDocument } from "./ClassificationDocument";
 import { Chart } from "../../models/pdf";
 import DescriptionIcon from "@material-ui/icons/Description";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
-    pcaButton: {
+    classificationButton: {
       textTransform: "none",
       fontSize: 20,
     },
@@ -80,16 +80,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   dataset: Dataset;
-  onPCAButtonClick: (
+  onClassificationButtonClick: (
     id: number,
     clustersNumber: number,
     componentsNumber: number
   ) => void;
-  pcaLoading: boolean;
+  classificationLoading: boolean;
   datasetTransformed: Record<SensorPID, DataRecord[]>;
 }
 
-export const PCAPanel: React.FC<Props> = (props) => {
+export const ClassificationPanel: React.FC<Props> = (props) => {
   const [componentsNumber, setComponentsNumber] = useState<number>(
     COMPONENTS_NUMBER
   );
@@ -99,7 +99,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
 
   const classes = useStyles();
 
-  const { dataset, onPCAButtonClick, pcaLoading, datasetTransformed } = props;
+  const { dataset, onClassificationButtonClick, classificationLoading, datasetTransformed } = props;
   const { kmeansResult, svmResult } = dataset;
 
   let explainedVarianceRatio = kmeansResult.explainedVarianceRatio.replace(
@@ -123,31 +123,31 @@ export const PCAPanel: React.FC<Props> = (props) => {
     }
   }
 
-  // Generate PCA pdf document data
-  let pcaChartsData: Chart[] = [];
+  // Generate Classification pdf document data
+  let classificationChartsData: Chart[] = [];
 
   if (dataset.classificationApplied) {
-    pcaChartsData.push({
+    classificationChartsData.push({
       title: "Cumulative explained variance ratio",
       description:
         "Amount of variance (y axis) depending on the number of components",
       chart: `data:image/png;base64,${kmeansResult.cumulativeExplainedVarianceRatioPlot}`,
     });
 
-    pcaChartsData.push({
+    classificationChartsData.push({
       title: "WCSS",
       description:
         "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid",
       chart: `data:image/png;base64,${kmeansResult.wcssPlot}`,
     });
 
-    pcaChartsData.push({
+    classificationChartsData.push({
       title: "Two Principal Components",
       description: "Two Principal Components plot by clusters",
       chart: `data:image/png;base64,${kmeansResult.twoFirstComponentsPlot}`,
     });
 
-    pcaChartsData.push({
+    classificationChartsData.push({
       title: "Components and Features",
       description: "Chart about how the features affect each component",
       chart: `data:image/png;base64,${kmeansResult.componentsAndFeaturesPlot}`,
@@ -175,13 +175,13 @@ export const PCAPanel: React.FC<Props> = (props) => {
             <Button
               color="primary"
               variant="contained"
-              className={classes.pcaButton}
+              className={classes.classificationButton}
               onClick={() => {
-                onPCAButtonClick(dataset.id, clusterNumber, componentsNumber);
+                onClassificationButtonClick(dataset.id, clusterNumber, componentsNumber);
               }}
               endIcon={<ShowChartIcon />}
             >
-              Apply PCA to dataset
+              Apply classification to dataset
             </Button>
           </Grid>
           {kmeansResult.componentsAndFeaturesPlot &&
@@ -193,7 +193,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
                   variant="contained"
                   color="primary"
                   onClick={() => setOpenDocument(!openDocument)}
-                  className={classes.pcaButton}
+                  className={classes.classificationButton}
                   endIcon={<DescriptionIcon />}
                 >
                   Generate charts document
@@ -211,7 +211,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
                     </Button>
                   </Paper>
                   <PDFViewer className={classes.pdf}>
-                    {PCADocument(pcaChartsData)}
+                    {ClassificationDocument(classificationChartsData)}
                   </PDFViewer>
                 </Dialog>
               </Grid>
@@ -234,7 +234,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
               onChange={setClusterNumber}
             />
           </Grid>
-          {pcaLoading && (
+          {classificationLoading && (
             <Grid item xs={9} alignItems="center" justify="center">
               <LinearProgress />
             </Grid>
@@ -358,10 +358,10 @@ export const PCAPanel: React.FC<Props> = (props) => {
                   </Grid>
                 )}
 
-                {pcaChartsData.map((c, i) => {
+                {classificationChartsData.map((c, i) => {
                   return (
                     <Grid item xs={6}>
-                      <PCAChart
+                      <ClassificationChart
                         title={c.title}
                         description={c.description}
                         chart={c.chart}
@@ -371,7 +371,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
                 })}
                 {kmeansResult.clusterList && (
                   <Grid item xs={12}>
-                    <PCACluster
+                    <ClassificationCluster
                       dataset={datasetTransformed}
                       clusterList={kmeansResult.clusterList}
                     />
@@ -395,7 +395,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Grid container xs={12} spacing={3}>
-                <PCAChart
+                <ClassificationChart
                   title={"Two Principal Components"}
                   description={"Two Principal Components plot by categories"}
                   chart={`data:image/png;base64,${svmResult.twoFirstComponentsPlot}`}

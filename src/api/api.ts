@@ -50,7 +50,7 @@ export class Api {
     );
   };
 
-  pca = async (
+  classify = async (
     id: number,
     clustersNumber: number,
     componentsNumber: number

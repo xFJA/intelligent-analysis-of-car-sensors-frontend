@@ -26,7 +26,7 @@ import { saveAs } from "@progress/kendo-file-saver";
 import DescriptionIcon from "@material-ui/icons/Description";
 import DeleteIcon from "@material-ui/icons/Delete";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { PCAPanel } from "../PCAPanel.tsx/PCAPanel";
+import { ClassificationPanel } from "../ClassificationPanel/ClassificationPanel";
 import { Record as DataRecord } from "./../../models/bar";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -129,7 +129,9 @@ export const Home: React.FC = () => {
   const [datasetSelected, setDatasetSelected] = useState<Dataset>();
   const [indexSelected, setIndexSelected] = useState<number>();
   const [progressOpen, setProgressOpen] = useState<boolean>(false);
-  const [pcaLoading, setPCALoading] = useState<boolean>(false);
+  const [classificationLoading, setClassificationLoading] = useState<boolean>(
+    false
+  );
   const [datasetTransformed, setDatasetTransformed] = useState<
     Record<SensorPID, DataRecord[]>
   >();
@@ -179,21 +181,21 @@ export const Home: React.FC = () => {
       });
   };
 
-  const onPCAButtonClick = (
+  const onClassificationButtonClick = (
     id: number,
     clustersNumber: number,
     componentsNumber: number
   ) => {
-    setPCALoading(true);
+    setClassificationLoading(true);
 
     service
-      .pca(id, clustersNumber, componentsNumber)
+      .classify(id, clustersNumber, componentsNumber)
       .then((res) => {
-        setPCALoading(false);
+        setClassificationLoading(false);
         setDatasetSelected(res);
       })
       .catch((e) => {
-        setPCALoading(false);
+        setClassificationLoading(false);
         // TODO: Use snackbar component
         console.warn(e);
       });
@@ -331,7 +333,7 @@ export const Home: React.FC = () => {
                     Rows number
                   </TableCell>
                   <TableCell className={classes.tableHeadCell} align="center">
-                    PCA applied
+                    Classification applied
                   </TableCell>
                   <TableCell className={classes.tableHeadCell} align="center">
                     Column names
@@ -467,7 +469,7 @@ export const Home: React.FC = () => {
                     className={classes.tabHeader}
                   />
                   <Tab
-                    label="PCA"
+                    label="Classification"
                     {...a11yProps(1)}
                     className={classes.tabHeader}
                   />
@@ -487,11 +489,11 @@ export const Home: React.FC = () => {
               <BarGroup dataset={datasetTransformed} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <PCAPanel
+              <ClassificationPanel
                 dataset={datasetSelected}
                 datasetTransformed={datasetTransformed}
-                onPCAButtonClick={onPCAButtonClick}
-                pcaLoading={pcaLoading}
+                onClassificationButtonClick={onClassificationButtonClick}
+                classificationLoading={classificationLoading}
               />
             </TabPanel>
             <TabPanel value={value} index={2}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { SensorPID } from "../../models/dataset";
-import { Record as DataRecord } from "./../../models/bar";
+import { Record as DataRecord } from "../../models/bar";
 import {
   Tabs,
   Tab,
@@ -52,7 +52,7 @@ interface Props {
   clusterList: string[];
 }
 
-export const PCACluster: React.FC<Props> = (props) => {
+export const ClassificationCluster: React.FC<Props> = (props) => {
   const [value, setValue] = useState<number>(0);
   const [clusters, setClusters] = useState<string[]>([]);
   const [sensorSelected, setSensorSelected] = useState<SensorPID>(

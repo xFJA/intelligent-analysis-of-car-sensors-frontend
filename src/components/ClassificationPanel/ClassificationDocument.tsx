@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export const PCADocument = (data: Chart[]) => (
-  <Document author="Francisco Jiménez Aguilera" title={"PCA charts"}>
+export const ClassificationDocument = (data: Chart[]) => (
+  <Document author="Francisco Jiménez Aguilera" title={"Classification charts"}>
     <Page size="A4" style={styles.page}>
       {data.map((c) => {
         return (
