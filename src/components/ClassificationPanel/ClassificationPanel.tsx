@@ -18,6 +18,7 @@ import {
   ListItemAvatar,
   Avatar,
   ListSubheader,
+  withStyles,
 } from "@material-ui/core";
 import { ClassificationChart } from "./ClassificationChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -32,11 +33,29 @@ import ShowChartIcon from "@material-ui/icons/ShowChart";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const COMPONENTS_NUMBER = 3;
 const CLUSTERS_NUMBER = 5;
+
+const AccordionSummary = withStyles({
+  root: {
+    backgroundColor: "#3f51b5",
+    color: "#FFFFFF",
+    marginBottom: -1,
+    minHeight: 56,
+    "&$expanded": {
+      minHeight: 56,
+    },
+  },
+  content: {
+    "&$expanded": {
+      margin: "12px 0",
+    },
+  },
+  expandIcon: { color: "#FFFFFF" },
+})(MuiAccordionSummary);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,6 +94,9 @@ const useStyles = makeStyles((theme: Theme) =>
     accordion: {
       maxWidth: "100%",
     },
+    accordionTitle: {
+      fontSize: 20,
+    },
   })
 );
 
@@ -99,7 +121,12 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
 
   const classes = useStyles();
 
-  const { dataset, onClassificationButtonClick, classificationLoading, datasetTransformed } = props;
+  const {
+    dataset,
+    onClassificationButtonClick,
+    classificationLoading,
+    datasetTransformed,
+  } = props;
   const { kmeansResult, svmResult } = dataset;
 
   let explainedVarianceRatio = kmeansResult.explainedVarianceRatio.replace(
@@ -177,7 +204,11 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
               variant="contained"
               className={classes.classificationButton}
               onClick={() => {
-                onClassificationButtonClick(dataset.id, clusterNumber, componentsNumber);
+                onClassificationButtonClick(
+                  dataset.id,
+                  clusterNumber,
+                  componentsNumber
+                );
               }}
               endIcon={<ShowChartIcon />}
             >
@@ -252,7 +283,9 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
               aria-controls="panel1bh-content"
               id="panel1bh-header"
             >
-              <Typography>k-means</Typography>
+              <Typography className={classes.accordionTitle}>
+                k-means
+              </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container spacing={3}>
@@ -391,15 +424,17 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
               aria-controls="panel2bh-content"
               id="panel2bh-header"
             >
-              <Typography>SVM</Typography>
+              <Typography className={classes.accordionTitle}>SVM</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container xs={12} spacing={3}>
-                <ClassificationChart
-                  title={"Two Principal Components"}
-                  description={"Two Principal Components plot by categories"}
-                  chart={`data:image/png;base64,${svmResult.twoFirstComponentsPlot}`}
-                />
+              <Grid container spacing={3}>
+                <Grid item xs={6} spacing={3}>
+                  <ClassificationChart
+                    title={"Two Principal Components"}
+                    description={"Two Principal Components plot by categories"}
+                    chart={`data:image/png;base64,${svmResult.twoFirstComponentsPlot}`}
+                  />
+                </Grid>
               </Grid>
             </AccordionDetails>
           </Accordion>
