@@ -1,3 +1,5 @@
+import { KMeansResult, SVMResult } from "./ai";
+
 export interface DatasetsRequest {
   data: LightDataset[];
   datasetsNumber: number;
@@ -9,13 +11,8 @@ export interface DatasetRequest {
 
 export interface Dataset extends LightDataset {
   logs: Log[];
-  twoFirstComponentsPlot: string;
-  componentsAndFeaturesPlot: string;
-  explainedVarianceRatio: string;
-  wcssPlot: string;
-  cumulativeExplainedVarianceRatioPlot: string;
-  clusterList: string[];
-  moreImportantFeatures: string; // TODO: Use the proper interface here
+  kmeansResult: KMeansResult;
+  svmResult: SVMResult;
 }
 
 export interface LightDataset {
@@ -24,7 +21,7 @@ export interface LightDataset {
   name: string;
   rowsNumber: number;
   columnNames: string;
-  pcaApplied: boolean;
+  classificationApplied: boolean;
 }
 
 export interface Log {

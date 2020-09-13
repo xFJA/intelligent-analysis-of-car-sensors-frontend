@@ -89,15 +89,21 @@ export const PCAPanel: React.FC<Props> = (props) => {
   const classes = useStyles();
 
   const { dataset, onPCAButtonClick, pcaLoading, datasetTransformed } = props;
+  const { kmeansResult, svmResult } = dataset;
 
-  let explainedVarianceRatio = dataset.explainedVarianceRatio.replace("[", "");
+  let explainedVarianceRatio = kmeansResult.explainedVarianceRatio.replace(
+    "[",
+    ""
+  );
   explainedVarianceRatio = explainedVarianceRatio.replace("]", "");
   const explainedVarianceRatioList = explainedVarianceRatio.split(",");
 
   // TODO: Add an interface to parse this property
   let moreImportantFeatures = [];
-  if (dataset.moreImportantFeatures) {
-    const moreImportantFeaturesMap = JSON.parse(dataset.moreImportantFeatures);
+  if (kmeansResult.moreImportantFeatures) {
+    const moreImportantFeaturesMap = JSON.parse(
+      kmeansResult.moreImportantFeatures
+    );
     for (let key in moreImportantFeaturesMap) {
       const moreImportantFeature = Object.entries(
         moreImportantFeaturesMap[key]
@@ -109,31 +115,31 @@ export const PCAPanel: React.FC<Props> = (props) => {
   // Generate PCA pdf document data
   let pcaChartsData: Chart[] = [];
 
-  if (dataset.pcaApplied) {
+  if (dataset.classificationApplied) {
     pcaChartsData.push({
       title: "Cumulative explained variance ratio",
       description:
         "Amount of variance (y axis) depending on the number of components",
-      chart: `data:image/png;base64,${dataset.cumulativeExplainedVarianceRatioPlot}`,
+      chart: `data:image/png;base64,${kmeansResult.cumulativeExplainedVarianceRatioPlot}`,
     });
 
     pcaChartsData.push({
       title: "WCSS",
       description:
         "Within Cluster Sum of Squares (WCSS) measures the squared average distance of all the points within a cluster to the cluster centroid",
-      chart: `data:image/png;base64,${dataset.wcssPlot}`,
+      chart: `data:image/png;base64,${kmeansResult.wcssPlot}`,
     });
 
     pcaChartsData.push({
       title: "Two Principal Components",
       description: "Two Principal Components plot by clusters",
-      chart: `data:image/png;base64,${dataset.twoFirstComponentsPlot}`,
+      chart: `data:image/png;base64,${kmeansResult.twoFirstComponentsPlot}`,
     });
 
     pcaChartsData.push({
       title: "Components and Features",
       description: "Chart about how the features affect each component",
-      chart: `data:image/png;base64,${dataset.componentsAndFeaturesPlot}`,
+      chart: `data:image/png;base64,${kmeansResult.componentsAndFeaturesPlot}`,
     });
   }
 
@@ -160,10 +166,10 @@ export const PCAPanel: React.FC<Props> = (props) => {
               Apply PCA to dataset
             </Button>
           </Grid>
-          {dataset.componentsAndFeaturesPlot &&
-            dataset.twoFirstComponentsPlot &&
-            dataset.wcssPlot &&
-            dataset.cumulativeExplainedVarianceRatioPlot && (
+          {kmeansResult.componentsAndFeaturesPlot &&
+            kmeansResult.twoFirstComponentsPlot &&
+            kmeansResult.wcssPlot &&
+            kmeansResult.cumulativeExplainedVarianceRatioPlot && (
               <Grid item>
                 <Button
                   variant="contained"
@@ -320,11 +326,11 @@ export const PCAPanel: React.FC<Props> = (props) => {
               </Grid>
             );
           })}
-          {dataset.clusterList && (
+          {kmeansResult.clusterList && (
             <Grid item xs={12}>
               <PCACluster
                 dataset={datasetTransformed}
-                clusterList={dataset.clusterList}
+                clusterList={kmeansResult.clusterList}
               />
             </Grid>
           )}

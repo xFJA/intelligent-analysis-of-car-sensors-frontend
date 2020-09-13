@@ -387,7 +387,7 @@ export const Home: React.FC = () => {
                         align="center"
                       >
                         <Typography variant="h6">
-                          {v.pcaApplied ? (
+                          {v.classificationApplied ? (
                             <CheckCircleIcon
                               className={classes.checkIcon}
                               fontSize="large"

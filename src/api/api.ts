@@ -56,7 +56,7 @@ export class Api {
     componentsNumber: number
   ): Promise<Dataset> => {
     return await axios(
-      `${BASE_URL}pca/${id}?clusters-number=${clustersNumber}&components-number=${componentsNumber}`
+      `${BASE_URL}classify/${id}?clusters-number=${clustersNumber}&components-number=${componentsNumber}`
     ).then((response: any) => {
       if (response.status !== 200) throw new Error(JSON.stringify(Response));
       return response.data;
