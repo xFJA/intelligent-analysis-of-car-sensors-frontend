@@ -4,7 +4,7 @@ export interface KMeansResult {
   explainedVarianceRatio: string;
   wcssPlot: string;
   cumulativeExplainedVarianceRatioPlot: string;
-  clusterList: string[];
+  clusterList: string;
   moreImportantFeatures: string; // TODO: Use the proper interface here
 }
 

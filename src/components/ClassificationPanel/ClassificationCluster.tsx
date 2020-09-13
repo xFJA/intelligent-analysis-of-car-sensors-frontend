@@ -49,7 +49,7 @@ function a11yProps(index: any) {
 
 interface Props {
   dataset: Record<SensorPID, DataRecord[]>;
-  clusterList: string[];
+  clusterList: string;
 }
 
 export const ClassificationCluster: React.FC<Props> = (props) => {
@@ -73,11 +73,15 @@ export const ClassificationCluster: React.FC<Props> = (props) => {
   const generatePlotData = (feature: SensorPID): PlotData[] => {
     let data: PlotData[] = [];
     let featureData = dataset[feature];
+    const clusterListCleaned = clusterList
+      .substring(1, clusterList.length - 1)
+      .split(",");
+      
     for (let cluster in clusters) {
       let plotList: PlotPoint[] = [];
 
       for (let i = 0; i < featureData.length; i++) {
-        if (clusterList[i] === cluster) {
+        if (clusterListCleaned[i] === cluster) {
           plotList.push({ x: i, y: featureData[i].value });
         }
       }
@@ -86,7 +90,6 @@ export const ClassificationCluster: React.FC<Props> = (props) => {
     }
     return data;
   };
-
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
     setSensorSelected(sensorList[newValue] as SensorPID);
