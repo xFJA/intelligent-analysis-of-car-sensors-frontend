@@ -30,6 +30,10 @@ import { Chart } from "../../models/pdf";
 import DescriptionIcon from "@material-ui/icons/Description";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import CancelIcon from "@material-ui/icons/Cancel";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const COMPONENTS_NUMBER = 3;
 const CLUSTERS_NUMBER = 5;
@@ -65,6 +69,12 @@ const useStyles = makeStyles((theme: Theme) =>
     moreImportantFeaturesListAvatar: {
       backgroundColor: theme.palette.secondary.main,
     },
+    accordionsContainer: {
+      maxWidth: "100%",
+    },
+    accordion: {
+      maxWidth: "100%",
+    },
   })
 );
 
@@ -85,6 +95,7 @@ export const PCAPanel: React.FC<Props> = (props) => {
   );
   const [clusterNumber, setClusterNumber] = useState<number>(CLUSTERS_NUMBER);
   const [openDocument, setOpenDocument] = useState<boolean>(false);
+  const [expanded, setExpanded] = React.useState<string | false>(false);
 
   const classes = useStyles();
 
@@ -142,6 +153,13 @@ export const PCAPanel: React.FC<Props> = (props) => {
       chart: `data:image/png;base64,${kmeansResult.componentsAndFeaturesPlot}`,
     });
   }
+
+  const handleChange = (panel: string) => (
+    event: React.ChangeEvent<{}>,
+    isExpanded: boolean
+  ) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   return (
     <>
@@ -222,118 +240,169 @@ export const PCAPanel: React.FC<Props> = (props) => {
             </Grid>
           )}
         </Grid>
-        <Grid item xs={12} spacing={3}>
-          {explainedVarianceRatioList.length > 1 && (
-            <>
-              <Card className={classes.root} elevation={5}>
-                <CardActionArea>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Explained variance ratio
-                    </Typography>
-                    <Typography variant="body2" component="p">
-                      How much information (variance) corresponds to each of the
-                      Principal Components
-                    </Typography>
-                  </CardContent>
-                  <Paper>
-                    <List>
-                      {explainedVarianceRatioList.map((v, i) => {
-                        return (
-                          <div key={i}>
-                            <ListItem>
-                              <ListItemText
-                                primary={`Principal Component ${i + 1}`}
-                                secondary={
-                                  (
-                                    ((v as unknown) as number) * 100
-                                  ).toString() + "%"
+        <Grid item className={classes.accordionsContainer}>
+          <Accordion
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+            className={classes.accordion}
+            disabled={!dataset.classificationApplied}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1bh-content"
+              id="panel1bh-header"
+            >
+              <Typography>k-means</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={3}>
+                <Grid item xs={12} spacing={3}>
+                  {explainedVarianceRatioList.length > 1 && (
+                    <>
+                      <Card className={classes.root} elevation={5}>
+                        <CardActionArea>
+                          <CardContent>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="h2"
+                            >
+                              Explained variance ratio
+                            </Typography>
+                            <Typography variant="body2" component="p">
+                              How much information (variance) corresponds to
+                              each of the Principal Components
+                            </Typography>
+                          </CardContent>
+                          <Paper>
+                            <List>
+                              {explainedVarianceRatioList.map((v, i) => {
+                                return (
+                                  <div key={i}>
+                                    <ListItem>
+                                      <ListItemText
+                                        primary={`Principal Component ${i + 1}`}
+                                        secondary={
+                                          (
+                                            ((v as unknown) as number) * 100
+                                          ).toString() + "%"
+                                        }
+                                      />
+                                    </ListItem>
+                                  </div>
+                                );
+                              })}
+                            </List>
+                          </Paper>
+                        </CardActionArea>
+                      </Card>
+                    </>
+                  )}
+                </Grid>
+                {moreImportantFeatures && (
+                  <Grid item xs={12} spacing={3}>
+                    <Card className={classes.root} elevation={5}>
+                      <CardActionArea>
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            More important features for principal components
+                          </Typography>
+                          <Typography variant="body2" component="p">
+                            The most contributory features for each principal
+                            component. Each value represents the percentage of
+                            the coeficient for the given feature. It corresponds
+                            to the first coeficient percetanges that their sum
+                            is equal or greater to 90%
+                          </Typography>
+                        </CardContent>
+                        <Paper
+                          className={classes.moreImportantFeaturesListContainer}
+                        >
+                          {moreImportantFeatures.map((v, i) => {
+                            // TODO: Fix subheader solapation when list is scrolling
+                            return (
+                              <List
+                                className={classes.moreImportantFeaturesList}
+                                subheader={
+                                  <ListSubheader component="div">
+                                    {`Principal Component ${i + 1}`}
+                                  </ListSubheader>
                                 }
-                              />
-                            </ListItem>
-                          </div>
-                        );
-                      })}
-                    </List>
-                  </Paper>
-                </CardActionArea>
-              </Card>
-            </>
-          )}
-        </Grid>
-        {moreImportantFeatures && (
-          <Grid item xs={12} spacing={3}>
-            <Card className={classes.root} elevation={5}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    More important features for principal components
-                  </Typography>
-                  <Typography variant="body2" component="p">
-                    The most contributory features for each principal component.
-                    Each value represents the percentage of the coeficient for
-                    the given feature. It corresponds to the first coeficient
-                    percetanges that their sum is equal or greater to 90%
-                  </Typography>
-                </CardContent>
-                <Paper className={classes.moreImportantFeaturesListContainer}>
-                  {moreImportantFeatures.map((v, i) => {
-                    // TODO: Fix subheader solapation when list is scrolling
-                    return (
-                      <List
-                        className={classes.moreImportantFeaturesList}
-                        subheader={
-                          <ListSubheader component="div">
-                            {`Principal Component ${i + 1}`}
-                          </ListSubheader>
-                        }
-                        key={i}
-                      >
-                        {v.map((f, j) => {
-                          return (
-                            <ListItem key={j}>
-                              <ListItemAvatar>
-                                <Avatar
-                                  className={
-                                    classes.moreImportantFeaturesListAvatar
-                                  }
-                                >{`${j + 1}º`}</Avatar>
-                              </ListItemAvatar>
-                              <ListItemText
-                                primary={f[0]}
-                                secondary={`${(f[1] as number).toFixed(3)} %`}
-                              />
-                            </ListItem>
-                          );
-                        })}
-                      </List>
-                    );
-                  })}
-                </Paper>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        )}
-        <Grid container item xs={12} spacing={3}>
-          {pcaChartsData.map((c, i) => {
-            return (
-              <Grid item xs={6}>
+                                key={i}
+                              >
+                                {v.map((f, j) => {
+                                  return (
+                                    <ListItem key={j}>
+                                      <ListItemAvatar>
+                                        <Avatar
+                                          className={
+                                            classes.moreImportantFeaturesListAvatar
+                                          }
+                                        >{`${j + 1}º`}</Avatar>
+                                      </ListItemAvatar>
+                                      <ListItemText
+                                        primary={f[0]}
+                                        secondary={`${(f[1] as number).toFixed(
+                                          3
+                                        )} %`}
+                                      />
+                                    </ListItem>
+                                  );
+                                })}
+                              </List>
+                            );
+                          })}
+                        </Paper>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                )}
+
+                {pcaChartsData.map((c, i) => {
+                  return (
+                    <Grid item xs={6}>
+                      <PCAChart
+                        title={c.title}
+                        description={c.description}
+                        chart={c.chart}
+                      />
+                    </Grid>
+                  );
+                })}
+                {kmeansResult.clusterList && (
+                  <Grid item xs={12}>
+                    <PCACluster
+                      dataset={datasetTransformed}
+                      clusterList={kmeansResult.clusterList}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion
+            expanded={expanded === "panel2"}
+            onChange={handleChange("panel2")}
+            className={classes.accordion}
+            disabled={!dataset.classificationApplied}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2bh-content"
+              id="panel2bh-header"
+            >
+              <Typography>SVM</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container xs={12} spacing={3}>
                 <PCAChart
-                  title={c.title}
-                  description={c.description}
-                  chart={c.chart}
+                  title={"Two Principal Components"}
+                  description={"Two Principal Components plot by categories"}
+                  chart={`data:image/png;base64,${svmResult.twoFirstComponentsPlot}`}
                 />
               </Grid>
-            );
-          })}
-          {kmeansResult.clusterList && (
-            <Grid item xs={12}>
-              <PCACluster
-                dataset={datasetTransformed}
-                clusterList={kmeansResult.clusterList}
-              />
-            </Grid>
-          )}
+            </AccordionDetails>
+          </Accordion>
         </Grid>
       </Grid>
     </>
