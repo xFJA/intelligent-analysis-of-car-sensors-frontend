@@ -62,4 +62,18 @@ export class Api {
       return response.data;
     });
   };
+
+  classifySVM = async (id: number, file: File) => {
+    let form = new FormData();
+    form.append("csv", file);
+    form.append("id", id.toString());
+
+    return await axios(`${BASE_URL}classify-svm`, {
+      method: "POST",
+      data: form,
+    }).then((response: any) => {
+      if (response.status !== 200) throw new Error(JSON.stringify(Response));
+      return response.data;
+    });
+  };
 }

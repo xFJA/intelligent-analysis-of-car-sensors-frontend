@@ -35,6 +35,7 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { ClassificationSVMForm } from "./ClassificationSVMForm";
 
 const COMPONENTS_NUMBER = 3;
 const CLUSTERS_NUMBER = 5;
@@ -434,6 +435,9 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
                     description={"Two Principal Components plot by categories"}
                     chart={`data:image/png;base64,${svmResult.twoFirstComponentsPlot}`}
                   />
+                </Grid>
+                <Grid item xs={6} spacing={3}>
+                  <ClassificationSVMForm id={dataset.id} />
                 </Grid>
               </Grid>
             </AccordionDetails>
