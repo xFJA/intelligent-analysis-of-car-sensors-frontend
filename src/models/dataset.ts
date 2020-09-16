@@ -72,3 +72,7 @@ export interface Sensor {
   description: string;
   measureUnit: string;
 }
+
+export interface SensorsRequest {
+  data: Sensor[];
+}

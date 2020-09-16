@@ -5,10 +5,11 @@ import { Record as DataRecord } from "./../../models/bar";
 interface Props {
   data: DataRecord[];
   dataKey: string;
+  measureUnit?: string;
 }
 
 export const Bar: React.FC<Props> = (props) => {
-  const { data, dataKey } = props;
+  const { data, dataKey, measureUnit } = props;
 
   return (
     <ResponsiveBar
@@ -21,8 +22,8 @@ export const Bar: React.FC<Props> = (props) => {
       borderColor={{
         from: "color",
         modifiers: [
-          ["darker", 0.6],
-          ["opacity", 0.6],
+          ["darker", 1],
+          ["opacity", 1],
         ],
       }}
       axisTop={null}
@@ -31,7 +32,7 @@ export const Bar: React.FC<Props> = (props) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Row",
+        legend: "Row index in CSV",
         legendPosition: "middle",
         legendOffset: 32,
         tickValues: [],
@@ -40,7 +41,7 @@ export const Bar: React.FC<Props> = (props) => {
         tickSize: 5,
         tickPadding: 10,
         tickRotation: 0,
-        legend: "value", // TODO: add measure unit
+        legend: measureUnit,
         legendPosition: "middle",
         legendOffset: -54,
       }}
@@ -74,6 +75,7 @@ export const Bar: React.FC<Props> = (props) => {
       animate={true}
       motionStiffness={90}
       motionDamping={15}
+      borderWidth={0.5}
     />
   );
 };

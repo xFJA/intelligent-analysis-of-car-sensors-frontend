@@ -18,7 +18,7 @@ import {
   TablePagination,
   Toolbar,
 } from "@material-ui/core";
-import { LightDataset, Dataset, SensorPID } from "../../models/dataset";
+import { LightDataset, Dataset, SensorPID, Sensor } from "../../models/dataset";
 import { Api } from "../../api/api";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { ColumnNames } from "./ColumnNames";
@@ -138,6 +138,7 @@ export const Home: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(3);
   const [datasetsNumber, setDatasetsNumber] = useState<number>(0);
+  const [sensors, setSensors] = useState<Sensor[]>([]);
 
   useEffect(() => {
     service
@@ -155,6 +156,18 @@ export const Home: React.FC = () => {
         console.warn(e);
       });
   }, [rowsPerPage, page]);
+
+  useEffect(() => {
+    service
+      .getSensors()
+      .then((res) => {
+        setSensors(res.data);
+      })
+      .catch((e) => {
+        // TODO: Use snackbar component
+        console.warn(e);
+      });
+  }, []);
 
   // TODO: Find a way to avoid add this method to all cells from the row (except the column names)
   const onRowSelect = (
@@ -403,7 +416,7 @@ export const Home: React.FC = () => {
                         </Typography>
                       </TableCell>
                       <TableCell align="center">
-                        <ColumnNames names={v.columnNames} />
+                        <ColumnNames sensorsInformation={sensors} />
                       </TableCell>
                       <TableCell align="center">
                         <div style={{ color: "#FFFFFF" }}>
@@ -486,7 +499,10 @@ export const Home: React.FC = () => {
               </Toolbar>
             </AppBar>
             <TabPanel value={value} index={0}>
-              <BarGroup dataset={datasetTransformed} />
+              <BarGroup
+                dataset={datasetTransformed}
+                sensorsInformation={sensors}
+              />
             </TabPanel>
             <TabPanel value={value} index={1}>
               <ClassificationPanel
@@ -494,6 +510,7 @@ export const Home: React.FC = () => {
                 datasetTransformed={datasetTransformed}
                 onClassificationButtonClick={onClassificationButtonClick}
                 classificationLoading={classificationLoading}
+                sensorsInformation={sensors}
               />
             </TabPanel>
             <TabPanel value={value} index={2}>

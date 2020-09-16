@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SensorPID } from "../../models/dataset";
+import { SensorPID, Sensor } from "../../models/dataset";
 import { Record as DataRecord } from "../../models/bar";
 import {
   Tabs,
@@ -28,17 +28,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
+    width: 400,
+    paddingLeft: 50,
   },
   plotContainer: {
     height: 500,
   },
 }));
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
-}
 
 function a11yProps(index: any) {
   return {
@@ -50,6 +46,7 @@ function a11yProps(index: any) {
 interface Props {
   dataset: Record<SensorPID, DataRecord[]>;
   clusterList: string;
+  sensorsInformation: Sensor[];
 }
 
 export const ClassificationCluster: React.FC<Props> = (props) => {
@@ -59,7 +56,7 @@ export const ClassificationCluster: React.FC<Props> = (props) => {
     SensorPID.EngineRPM
   );
 
-  const { dataset, clusterList } = props;
+  const { dataset, clusterList, sensorsInformation } = props;
   const sensorList = Object.keys(dataset);
 
   useEffect(() => {
@@ -76,7 +73,7 @@ export const ClassificationCluster: React.FC<Props> = (props) => {
     const clusterListCleaned = clusterList
       .substring(1, clusterList.length - 1)
       .split(",");
-      
+
     for (let cluster in clusters) {
       let plotList: PlotPoint[] = [];
 
@@ -126,7 +123,13 @@ export const ClassificationCluster: React.FC<Props> = (props) => {
           >
             {tabs}
           </Tabs>
-          <Plot data={generatePlotData(sensorSelected)} />
+          <Plot
+            data={generatePlotData(sensorSelected)}
+            measureUnit={
+              sensorsInformation.find((s) => s.pid === sensorSelected)
+                ?.measureUnit || ""
+            }
+          />
         </div>
       </CardActionArea>
     </Card>

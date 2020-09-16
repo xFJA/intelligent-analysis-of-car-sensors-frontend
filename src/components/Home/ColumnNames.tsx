@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Popover from "@material-ui/core/Popover";
 import Button from "@material-ui/core/Button";
 import {
@@ -8,7 +8,9 @@ import {
   makeStyles,
   Theme,
   createStyles,
+  Tooltip,
 } from "@material-ui/core";
+import { Sensor } from "../../models/dataset";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,23 +19,26 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
+    list: {
+      backgroundColor: theme.palette.primary.main,
+      border: "1px solid rgba(255,255,255, 0.5)",
+    },
+    item: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      border: "1px solid rgba(255,255,255, 0.1)",
+    },
   })
 );
 
 interface Props {
-  names: string;
+  sensorsInformation: Sensor[];
 }
 
 export const ColumnNames: React.FC<Props> = (props) => {
   const classes = useStyles();
 
-  const { names } = props;
-
-  const [namesList, setNamesList] = useState<string[]>([]);
-
-  useEffect(() => {
-    setNamesList(names.split(","));
-  }, [names]);
+  const { sensorsInformation } = props;
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -59,7 +64,9 @@ export const ColumnNames: React.FC<Props> = (props) => {
         size="small"
         className={classes.button}
       >
-        <Typography variant="h6">Check {namesList.length} features </Typography>
+        <Typography variant="h6">
+          Check {sensorsInformation.length} features
+        </Typography>
       </Button>
 
       <Popover
@@ -76,10 +83,29 @@ export const ColumnNames: React.FC<Props> = (props) => {
           horizontal: "center",
         }}
       >
-        <List>
-          {namesList.map((v) => {
-            return <ListItem key={v}>{v}</ListItem>;
-          })}
+        <List className={classes.list}>
+          {sensorsInformation
+            .map((s) => {
+              return s.pid;
+            })
+            .map((v) => {
+              return (
+                <Tooltip
+                  title={
+                    sensorsInformation.find((s) => s.pid === v)?.description ||
+                    ""
+                  }
+                  key={v}
+                >
+                  <ListItem className={classes.item}>
+                    {v} (
+                    {sensorsInformation.find((s) => s.pid === v)?.measureUnit ||
+                      ""}
+                    )
+                  </ListItem>
+                </Tooltip>
+              );
+            })}
         </List>
       </Popover>
     </>

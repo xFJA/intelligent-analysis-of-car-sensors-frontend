@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dataset, SensorPID } from "../../models/dataset";
+import { Dataset, SensorPID, Sensor } from "../../models/dataset";
 import {
   Button,
   Grid,
@@ -110,6 +110,7 @@ interface Props {
   ) => void;
   classificationLoading: boolean;
   datasetTransformed: Record<SensorPID, DataRecord[]>;
+  sensorsInformation: Sensor[];
 }
 
 export const ClassificationPanel: React.FC<Props> = (props) => {
@@ -127,6 +128,7 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
     onClassificationButtonClick,
     classificationLoading,
     datasetTransformed,
+    sensorsInformation,
   } = props;
   const { kmeansResult, svmResult } = dataset;
 
@@ -408,6 +410,7 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
                     <ClassificationCluster
                       dataset={datasetTransformed}
                       clusterList={kmeansResult.clusterList}
+                      sensorsInformation={sensorsInformation}
                     />
                   </Grid>
                 )}

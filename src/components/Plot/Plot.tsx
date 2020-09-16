@@ -4,10 +4,11 @@ import { PlotData } from "../../models/plot";
 
 interface Props {
   data: PlotData[];
+  measureUnit: string;
 }
 
 export const Plot: React.FC<Props> = (props) => {
-  const { data } = props;
+  const { data, measureUnit } = props;
 
   return (
     <ResponsiveScatterPlot
@@ -31,7 +32,7 @@ export const Plot: React.FC<Props> = (props) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "weight",
+        legend: "Row index from dataset",
         legendPosition: "middle",
         legendOffset: 46,
       }}
@@ -40,7 +41,7 @@ export const Plot: React.FC<Props> = (props) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "size",
+        legend: measureUnit,
         legendPosition: "middle",
         legendOffset: -60,
       }}
