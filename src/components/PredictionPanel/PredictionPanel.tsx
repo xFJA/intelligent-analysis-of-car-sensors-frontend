@@ -171,98 +171,102 @@ export const PredictionPanel: React.FC<Props> = (props) => {
           <LinearProgress />
         </Grid>
       )}
-      <Grid item xs={12}>
-        <Card className={classes.informationPredictionCard} elevation={5}>
-          <CardActionArea>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                Information about prediction
-              </Typography>
-            </CardContent>
-            <Grid container>
-              <Grid
-                item
-                xs={4}
-                className={classes.informationPredictionSection}
-              >
-                <Typography
-                  className={classes.informationPredictionSectionTitle}
-                  variant="h6"
-                >
-                  Request configuration
-                </Typography>
-                <Divider />
-                <List>
-                  <ListItem>
-                    <ListItemText
-                      primary="Feature predicted"
-                      secondary={dataset.prediction.feature}
-                    />
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                className={classes.informationPredictionSection}
-              >
-                <Typography
-                  className={classes.informationPredictionSectionTitle}
-                  variant="h6"
-                >
-                  LSTM configuration
-                </Typography>
-                <Divider />
-                <List></List>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                className={classes.informationPredictionSection}
-              >
-                <Typography
-                  className={classes.informationPredictionSectionTitle}
-                  variant="h6"
-                >
-                  LSTM result
-                </Typography>
-                <Divider />
-                <List>
-                  <ListItem>
-                    <ListItemText
-                      primary="RMSE (Root Mean Square Error)"
-                      secondary={`${Number(dataset.prediction.rmse).toFixed(
-                        5
-                      )}`}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Prediction time"
-                      secondary={`${Number(dataset.prediction.time).toFixed(
-                        3
-                      )} seconds`}
-                    />
-                  </ListItem>
-                </List>
-              </Grid>
-            </Grid>
-          </CardActionArea>
-        </Card>
-      </Grid>
-      <Grid container item xs={12} spacing={3}>
-        {predictionChartsData.map((c, i) => {
-          return (
-            <Grid item xs={12}>
-              <CardChart
-                title={c.title}
-                description={c.description}
-                chart={c.chart}
-              />
-            </Grid>
-          );
-        })}
-      </Grid>
+      {dataset.predictionApplied && (
+        <>
+          <Grid item xs={12}>
+            <Card className={classes.informationPredictionCard} elevation={5}>
+              <CardActionArea>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Information about prediction
+                  </Typography>
+                </CardContent>
+                <Grid container>
+                  <Grid
+                    item
+                    xs={4}
+                    className={classes.informationPredictionSection}
+                  >
+                    <Typography
+                      className={classes.informationPredictionSectionTitle}
+                      variant="h6"
+                    >
+                      Request configuration
+                    </Typography>
+                    <Divider />
+                    <List>
+                      <ListItem>
+                        <ListItemText
+                          primary="Feature predicted"
+                          secondary={dataset.prediction.feature}
+                        />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    className={classes.informationPredictionSection}
+                  >
+                    <Typography
+                      className={classes.informationPredictionSectionTitle}
+                      variant="h6"
+                    >
+                      LSTM configuration
+                    </Typography>
+                    <Divider />
+                    <List></List>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    className={classes.informationPredictionSection}
+                  >
+                    <Typography
+                      className={classes.informationPredictionSectionTitle}
+                      variant="h6"
+                    >
+                      LSTM result
+                    </Typography>
+                    <Divider />
+                    <List>
+                      <ListItem>
+                        <ListItemText
+                          primary="RMSE (Root Mean Square Error)"
+                          secondary={`${Number(dataset.prediction.rmse).toFixed(
+                            5
+                          )}`}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Prediction time"
+                          secondary={`${Number(dataset.prediction.time).toFixed(
+                            3
+                          )} seconds`}
+                        />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                </Grid>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid container item xs={12} spacing={3}>
+            {predictionChartsData.map((c, i) => {
+              return (
+                <Grid item xs={12}>
+                  <CardChart
+                    title={c.title}
+                    description={c.description}
+                    chart={c.chart}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 };

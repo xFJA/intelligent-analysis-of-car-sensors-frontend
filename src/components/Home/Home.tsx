@@ -367,6 +367,9 @@ export const Home: React.FC = () => {
                     Classification applied
                   </TableCell>
                   <TableCell className={classes.tableHeadCell} align="center">
+                    Prediction applied
+                  </TableCell>
+                  <TableCell className={classes.tableHeadCell} align="center">
                     Column names
                   </TableCell>
                   <TableCell className={classes.tableHeadCell} align="center">
@@ -421,6 +424,24 @@ export const Home: React.FC = () => {
                       >
                         <Typography variant="h6">
                           {v.classificationApplied ? (
+                            <CheckCircleIcon
+                              className={classes.checkIcon}
+                              fontSize="large"
+                            />
+                          ) : (
+                            <CancelIcon
+                              className={classes.cancelIcon}
+                              fontSize="large"
+                            />
+                          )}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        onClick={(e) => onRowSelect(e, v.id)}
+                        align="center"
+                      >
+                        <Typography variant="h6">
+                          {v.predictionApplied ? (
                             <CheckCircleIcon
                               className={classes.checkIcon}
                               fontSize="large"

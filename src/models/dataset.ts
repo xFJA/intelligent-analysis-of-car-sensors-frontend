@@ -23,6 +23,7 @@ export interface LightDataset {
   rowsNumber: number;
   columnNames: string;
   classificationApplied: boolean;
+  predictionApplied: boolean;
 }
 
 export interface Log {
