@@ -89,12 +89,16 @@ export class Api {
     });
   };
 
-  predict = async (id: number, feature: string): Promise<Dataset> => {
-    return await axios(`${BASE_URL}predict/${id}?feature=${feature}`).then(
-      (response: any) => {
-        if (response.status !== 200) throw new Error(JSON.stringify(Response));
-        return response.data;
-      }
-    );
+  predict = async (
+    id: number,
+    feature: string,
+    epochs: number
+  ): Promise<Dataset> => {
+    return await axios(
+      `${BASE_URL}predict/${id}?feature=${feature}&epochs=${epochs}`
+    ).then((response: any) => {
+      if (response.status !== 200) throw new Error(JSON.stringify(Response));
+      return response.data;
+    });
   };
 }

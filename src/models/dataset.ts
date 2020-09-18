@@ -85,4 +85,5 @@ export interface Prediction {
   rmse: string;
   time: string;
   feature: string;
+  epochs: number;
 }

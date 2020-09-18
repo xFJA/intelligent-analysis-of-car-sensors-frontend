@@ -217,11 +217,15 @@ export const Home: React.FC = () => {
       });
   };
 
-  const onPredictionButtonClick = (id: number, feature: string) => {
+  const onPredictionButtonClick = (
+    id: number,
+    feature: string,
+    epochs: number
+  ) => {
     setPredictionLoading(true);
 
     service
-      .predict(id, feature)
+      .predict(id, feature, epochs)
       .then((res) => {
         setPredictionLoading(false);
         setDatasetSelected(res);

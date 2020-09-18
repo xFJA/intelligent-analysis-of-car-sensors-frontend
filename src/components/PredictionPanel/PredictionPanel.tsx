@@ -21,6 +21,7 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  TextField,
 } from "@material-ui/core";
 import { Dataset, Sensor } from "../../models/dataset";
 import { PredictionFeaturesType } from "./../../models/prediction";
@@ -44,6 +45,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     informationPredictionSectionTitle: {
       margin: "10px",
+    },
+    epochs: {
+      width: 50,
     },
   })
 );
@@ -69,6 +73,7 @@ export const PredictionPanel: React.FC<Props> = (props) => {
   const [featureSelected, setFeatureSelected] = useState<string>(
     sensorList[0].pid
   );
+  const [epochs, setEpochs] = useState<string>("100");
 
   const classes = useStyles();
 
@@ -106,7 +111,11 @@ export const PredictionPanel: React.FC<Props> = (props) => {
             color="primary"
             endIcon={<TimelineRoundedIcon />}
             onClick={() => {
-              onPredictionButtonClick(dataset.id, featureSelected);
+              onPredictionButtonClick(
+                dataset.id,
+                featureSelected,
+                Number(epochs)
+              );
             }}
             className={classes.button}
           >
@@ -164,6 +173,15 @@ export const PredictionPanel: React.FC<Props> = (props) => {
               onChange={setComponentsNumber}
             />
           )}
+
+          <TextField
+            className={classes.epochs}
+            label="Epochs"
+            value={epochs}
+            onChange={(e) => {
+              setEpochs(e.target.value);
+            }}
+          />
         </div>
       </Grid>
       {predictionLoading && (
@@ -215,7 +233,14 @@ export const PredictionPanel: React.FC<Props> = (props) => {
                       LSTM configuration
                     </Typography>
                     <Divider />
-                    <List></List>
+                    <List>
+                      <ListItem>
+                        <ListItemText
+                          primary="Epochs"
+                          secondary={dataset.prediction.epochs}
+                        />
+                      </ListItem>
+                    </List>
                   </Grid>
                   <Grid
                     item
@@ -255,7 +280,7 @@ export const PredictionPanel: React.FC<Props> = (props) => {
           <Grid container item xs={12} spacing={3}>
             {predictionChartsData.map((c, i) => {
               return (
-                <Grid item xs={12}>
+                <Grid item xs={12} key={i}>
                   <CardChart
                     title={c.title}
                     description={c.description}
