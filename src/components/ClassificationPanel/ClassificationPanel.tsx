@@ -20,7 +20,7 @@ import {
   ListSubheader,
   withStyles,
 } from "@material-ui/core";
-import { ClassificationChart } from "./ClassificationChart";
+import { CardChart } from "../Utils/CardChart";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { Record as DataRecord } from "../../models/bar";
 import { ClassificationCluster } from "./ClassificationCluster";
@@ -269,7 +269,7 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
             />
           </Grid>
           {classificationLoading && (
-            <Grid item xs={9} alignItems="center" justify="center">
+            <Grid item xs={12} alignItems="center" justify="center">
               <LinearProgress />
             </Grid>
           )}
@@ -397,7 +397,7 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
                 {classificationChartsData.map((c, i) => {
                   return (
                     <Grid item xs={6}>
-                      <ClassificationChart
+                      <CardChart
                         title={c.title}
                         description={c.description}
                         chart={c.chart}
@@ -433,7 +433,7 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
             <AccordionDetails>
               <Grid container spacing={3}>
                 <Grid item xs={6} spacing={3}>
-                  <ClassificationChart
+                  <CardChart
                     title={"Two Principal Components"}
                     description={"Two Principal Components plot by categories"}
                     chart={`data:image/png;base64,${svmResult.twoFirstComponentsPlot}`}

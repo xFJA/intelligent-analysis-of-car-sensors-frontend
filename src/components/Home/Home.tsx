@@ -30,6 +30,7 @@ import { ClassificationPanel } from "../ClassificationPanel/ClassificationPanel"
 import { Record as DataRecord } from "./../../models/bar";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { PredictionPanel } from "../PredictionPanel/PredictionPanel";
 
 const service = new Api();
 
@@ -132,6 +133,7 @@ export const Home: React.FC = () => {
   const [classificationLoading, setClassificationLoading] = useState<boolean>(
     false
   );
+  const [predictionLoading, setPredictionLoading] = useState<boolean>(false);
   const [datasetTransformed, setDatasetTransformed] = useState<
     Record<SensorPID, DataRecord[]>
   >();
@@ -209,6 +211,22 @@ export const Home: React.FC = () => {
       })
       .catch((e) => {
         setClassificationLoading(false);
+        // TODO: Use snackbar component
+        console.warn(e);
+      });
+  };
+
+  const onPredictionButtonClick = (id: number, feature: string) => {
+    setPredictionLoading(true);
+
+    service
+      .predict(id, feature)
+      .then((res) => {
+        setPredictionLoading(false);
+        setDatasetSelected(res);
+      })
+      .catch((e) => {
+        setPredictionLoading(false);
         // TODO: Use snackbar component
         console.warn(e);
       });
@@ -514,7 +532,12 @@ export const Home: React.FC = () => {
               />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              Predictions
+              <PredictionPanel
+                dataset={datasetSelected}
+                sensorList={sensors}
+                onPredictionButtonClick={onPredictionButtonClick}
+                predictionLoading={predictionLoading}
+              />
             </TabPanel>
           </Paper>
         </div>

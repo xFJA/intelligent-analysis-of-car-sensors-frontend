@@ -13,6 +13,7 @@ export interface Dataset extends LightDataset {
   logs: Log[];
   kmeansResult: KMeansResult;
   svmResult: SVMResult;
+  prediction: Prediction;
 }
 
 export interface LightDataset {
@@ -75,4 +76,12 @@ export interface Sensor {
 
 export interface SensorsRequest {
   data: Sensor[];
+}
+
+export interface Prediction {
+  learningCurvePlot: string;
+  predictionPlot: string;
+  rmse: string;
+  time: string;
+  feature: string;
 }

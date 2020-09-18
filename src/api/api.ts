@@ -1,5 +1,10 @@
 import axios from "axios";
-import { DatasetsRequest, DatasetRequest, Dataset, SensorsRequest } from "../models/dataset";
+import {
+  DatasetsRequest,
+  DatasetRequest,
+  Dataset,
+  SensorsRequest,
+} from "../models/dataset";
 
 // TODO: Add the base url by config or env
 const BASE_URL: string = "http://localhost:8080/";
@@ -78,7 +83,14 @@ export class Api {
   };
 
   getSensors = async (): Promise<SensorsRequest> => {
-    return await axios(`${BASE_URL}sensors`).then(
+    return await axios(`${BASE_URL}sensors`).then((response: any) => {
+      if (response.status !== 200) throw new Error(JSON.stringify(Response));
+      return response.data;
+    });
+  };
+
+  predict = async (id: number, feature: string): Promise<Dataset> => {
+    return await axios(`${BASE_URL}predict/${id}?feature=${feature}`).then(
       (response: any) => {
         if (response.status !== 200) throw new Error(JSON.stringify(Response));
         return response.data;
