@@ -208,6 +208,7 @@ export const Home: React.FC = () => {
       .then((res) => {
         setClassificationLoading(false);
         setDatasetSelected(res);
+        setDatasets(datasets.map((d) => (d.id === res.id ? res : d)));
       })
       .catch((e) => {
         setClassificationLoading(false);
@@ -224,6 +225,7 @@ export const Home: React.FC = () => {
       .then((res) => {
         setPredictionLoading(false);
         setDatasetSelected(res);
+        setDatasets(datasets.map((d) => (d.id === res.id ? res : d)));
       })
       .catch((e) => {
         setPredictionLoading(false);
