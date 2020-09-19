@@ -39,6 +39,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import DescriptionIcon from "@material-ui/icons/Description";
 import { PDFViewer } from "@react-pdf/renderer";
 import { DocumentPDF } from "../Utils/Document";
+import { saveAs } from "@progress/kendo-file-saver";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,6 +118,16 @@ export const PredictionPanel: React.FC<Props> = (props) => {
     setPredictionFeaturesType(
       (event.target as HTMLInputElement).value as PredictionFeaturesType
     );
+  };
+
+  const downloadPredictionInformationJSON = (
+    data: PredictionInformationList[]
+  ) => {
+    const name = `${dataset.id}-${featureSelected}-prediction.json`;
+    const file = new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    });
+    saveAs(file, name);
   };
 
   const predictionChartsData: Chart[] = [];
@@ -234,6 +245,21 @@ export const PredictionPanel: React.FC<Props> = (props) => {
                   />
                 </PDFViewer>
               </Dialog>
+            </Grid>
+          )}
+          {dataset.predictionApplied && (
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  downloadPredictionInformationJSON(predictionData)
+                }
+                className={classes.button}
+                endIcon={<DescriptionIcon />}
+              >
+                Generate JSON
+              </Button>
             </Grid>
           )}
           <FormControl
