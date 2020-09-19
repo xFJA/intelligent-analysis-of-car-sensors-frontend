@@ -52,6 +52,19 @@ const useStyles = makeStyles((theme: Theme) =>
     epochs: {
       width: 50,
     },
+    predictionFeaturesTypeForm: {
+      borderLeft: "1px solid  #b3b3b3",
+      borderRight: "1px solid  #b3b3b3",
+      margin: "0px 20px",
+    },
+    lstmConfigurationContainer: {
+      borderLeft: "1px solid  #b3b3b3",
+      margin: "0px 20px",
+      paddingLeft: 20,
+    },
+    requestConfigurationContainer: {
+      margin: "0pc 20px",
+    },
   })
 );
 
@@ -126,7 +139,10 @@ export const PredictionPanel: React.FC<Props> = (props) => {
           >
             Apply prediction
           </Button>
-          <FormControl component="fieldset">
+          <FormControl
+            component="fieldset"
+            className={classes.predictionFeaturesTypeForm}
+          >
             <RadioGroup
               row
               defaultValue={predictionFeaturesType}
@@ -152,41 +168,43 @@ export const PredictionPanel: React.FC<Props> = (props) => {
               />
             </RadioGroup>
           </FormControl>
-          <FormControl>
-            <InputLabel>Feature</InputLabel>
-            <Select
-              value={featureSelected}
-              onChange={(e) => setFeatureSelected(e.target.value as string)}
-              className={classes.select}
-            >
-              {sensorList.map((v) => {
-                return (
-                  <MenuItem key={v.pid} value={v.pid}>
-                    {v.pid}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-
-          {predictionFeaturesType === PredictionFeaturesType.PCA && (
-            <Input
-              min={2}
-              max={6}
-              value={componentsNumber}
-              title={"Components number"}
-              onChange={setComponentsNumber}
+          <div className={classes.requestConfigurationContainer}>
+            <FormControl>
+              <InputLabel>Feature</InputLabel>
+              <Select
+                value={featureSelected}
+                onChange={(e) => setFeatureSelected(e.target.value as string)}
+                className={classes.select}
+              >
+                {sensorList.map((v) => {
+                  return (
+                    <MenuItem key={v.pid} value={v.pid}>
+                      {v.pid}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            {predictionFeaturesType === PredictionFeaturesType.PCA && (
+              <Input
+                min={2}
+                max={6}
+                value={componentsNumber}
+                title={"Components number"}
+                onChange={setComponentsNumber}
+              />
+            )}
+          </div>
+          <div className={classes.lstmConfigurationContainer}>
+            <TextField
+              className={classes.epochs}
+              label="Epochs"
+              value={epochs}
+              onChange={(e) => {
+                setEpochs(e.target.value);
+              }}
             />
-          )}
-
-          <TextField
-            className={classes.epochs}
-            label="Epochs"
-            value={epochs}
-            onChange={(e) => {
-              setEpochs(e.target.value);
-            }}
-          />
+          </div>
         </div>
       </Grid>
       {predictionLoading && (
