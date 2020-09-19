@@ -24,7 +24,10 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Dataset, Sensor } from "../../models/dataset";
-import { PredictionFeaturesType, getPredictionFeaturesTypeString } from "./../../models/prediction";
+import {
+  PredictionFeaturesType,
+  getPredictionFeaturesTypeString,
+} from "./../../models/prediction";
 import TimelineRoundedIcon from "@material-ui/icons/TimelineRounded";
 import { Input } from "../ClassificationPanel/ClassificationForm";
 import { Chart } from "../../models/pdf";
@@ -115,7 +118,8 @@ export const PredictionPanel: React.FC<Props> = (props) => {
                 dataset.id,
                 featureSelected,
                 Number(epochs),
-                predictionFeaturesType
+                predictionFeaturesType,
+                componentsNumber
               );
             }}
             className={classes.button}
@@ -223,9 +227,21 @@ export const PredictionPanel: React.FC<Props> = (props) => {
                       <ListItem>
                         <ListItemText
                           primary="Prediction features type"
-                          secondary={getPredictionFeaturesTypeString(dataset.prediction.predictionFeaturesType)}
+                          secondary={getPredictionFeaturesTypeString(
+                            dataset.prediction.predictionFeaturesType
+                          )}
                         />
                       </ListItem>
+                      {dataset.prediction.principalComponentsNumber && (
+                        <ListItem>
+                          <ListItemText
+                            primary="Principal Components number"
+                            secondary={
+                              dataset.prediction.principalComponentsNumber
+                            }
+                          />
+                        </ListItem>
+                      )}
                     </List>
                   </Grid>
                   <Grid

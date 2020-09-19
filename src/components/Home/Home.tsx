@@ -222,12 +222,19 @@ export const Home: React.FC = () => {
     id: number,
     feature: string,
     epochs: number,
-    predictionsFeatureType: PredictionFeaturesType
+    predictionsFeatureType: PredictionFeaturesType,
+    principalComponentsNumber: number
   ) => {
     setPredictionLoading(true);
 
     service
-      .predict(id, feature, epochs, predictionsFeatureType)
+      .predict(
+        id,
+        feature,
+        epochs,
+        predictionsFeatureType,
+        principalComponentsNumber
+      )
       .then((res) => {
         setPredictionLoading(false);
         setDatasetSelected(res);

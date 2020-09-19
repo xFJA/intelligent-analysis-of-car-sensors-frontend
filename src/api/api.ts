@@ -94,10 +94,11 @@ export class Api {
     id: number,
     feature: string,
     epochs: number,
-    predictionsFeatureType: PredictionFeaturesType
+    predictionsFeatureType: PredictionFeaturesType,
+    principalComponentsNumber: number
   ): Promise<Dataset> => {
     return await axios(
-      `${BASE_URL}predict/${id}?feature=${feature}&epochs=${epochs}&predictions-feature-type=${predictionsFeatureType}`
+      `${BASE_URL}predict/${id}?feature=${feature}&epochs=${epochs}&predictions-feature-type=${predictionsFeatureType}&pc-number=${principalComponentsNumber}`
     ).then((response: any) => {
       if (response.status !== 200) throw new Error(JSON.stringify(Response));
       return response.data;

@@ -88,4 +88,5 @@ export interface Prediction {
   feature: string;
   epochs: number;
   predictionFeaturesType: PredictionFeaturesType;
+  principalComponentsNumber: number;
 }
