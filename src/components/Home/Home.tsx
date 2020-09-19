@@ -17,6 +17,7 @@ import {
   Box,
   TablePagination,
   Toolbar,
+  Snackbar,
 } from "@material-ui/core";
 import { LightDataset, Dataset, SensorPID, Sensor } from "../../models/dataset";
 import { Api } from "../../api/api";
@@ -32,6 +33,15 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { PredictionPanel } from "../PredictionPanel/PredictionPanel";
 import { PredictionFeaturesType } from "../../models/prediction";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
+
+// TODO: Create reusable component for feedback along all the app
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const vertical = "bottom",
+  horizontal = "left";
 
 const service = new Api();
 
@@ -142,6 +152,22 @@ export const Home: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(3);
   const [datasetsNumber, setDatasetsNumber] = useState<number>(0);
   const [sensors, setSensors] = useState<Sensor[]>([]);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    AlertProps["severity"]
+  >();
+  const [snackbarText, setSnackbarText] = useState<string>("");
+
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     service
@@ -210,11 +236,22 @@ export const Home: React.FC = () => {
         setClassificationLoading(false);
         setDatasetSelected(res);
         setDatasets(datasets.map((d) => (d.id === res.id ? res : d)));
+        setSnackbarText(
+          "Successful classification for dataset with ID = " + id
+        );
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
       })
       .catch((e) => {
         setClassificationLoading(false);
-        // TODO: Use snackbar component
-        console.warn(e);
+        setSnackbarText(
+          "Error on classification for dataset with ID = " +
+            id +
+            ". ERROR: " +
+            e.message
+        );
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       });
   };
 
@@ -239,11 +276,20 @@ export const Home: React.FC = () => {
         setPredictionLoading(false);
         setDatasetSelected(res);
         setDatasets(datasets.map((d) => (d.id === res.id ? res : d)));
+        setSnackbarText("Successful prediction for dataset with ID = " + id);
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
       })
       .catch((e) => {
         setPredictionLoading(false);
-        // TODO: Use snackbar component
-        console.warn(e);
+        setSnackbarText(
+          "Error on prediction for dataset with ID = " +
+            id +
+            ". ERROR: " +
+            e.message
+        );
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       });
   };
 
@@ -576,6 +622,18 @@ export const Home: React.FC = () => {
               />
             </TabPanel>
           </Paper>
+          {snackbarText && (
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={6000}
+              onClose={handleSnackbarClose}
+              anchorOrigin={{ vertical, horizontal }}
+            >
+              <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+                {snackbarText}
+              </Alert>
+            </Snackbar>
+          )}
         </div>
       )}
     </div>
