@@ -22,21 +22,28 @@ import {
   ListItemText,
   Divider,
   TextField,
+  Dialog,
+  Paper,
 } from "@material-ui/core";
 import { Dataset, Sensor } from "../../models/dataset";
 import {
   PredictionFeaturesType,
   getPredictionFeaturesTypeString,
+  PredictionInformationList,
 } from "./../../models/prediction";
 import TimelineRoundedIcon from "@material-ui/icons/TimelineRounded";
 import { Input } from "../ClassificationPanel/ClassificationForm";
 import { Chart } from "../../models/pdf";
 import { CardChart } from "../Utils/CardChart";
+import CancelIcon from "@material-ui/icons/Cancel";
+import DescriptionIcon from "@material-ui/icons/Description";
+import { PDFViewer } from "@react-pdf/renderer";
+import { DocumentPDF } from "../Utils/Document";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     form: { display: "flex", flexDirection: "row" },
-    button: { fontSize: 20, textTransform: "none" },
+    button: { fontSize: 20, textTransform: "none", margin: "0px 5px" },
     select: { minWidth: 100 },
     informationPredictionCard: {
       backgroundColor: theme.palette.primary.main,
@@ -65,6 +72,15 @@ const useStyles = makeStyles((theme: Theme) =>
     requestConfigurationContainer: {
       margin: "0pc 20px",
     },
+    cancel: {
+      backgroundColor: theme.palette.error.main,
+      color: theme.palette.common.white,
+      float: "right",
+    },
+    pdf: {
+      height: "80vh",
+      width: "40vw",
+    },
   })
 );
 
@@ -90,6 +106,8 @@ export const PredictionPanel: React.FC<Props> = (props) => {
     sensorList[0].pid
   );
   const [epochs, setEpochs] = useState<string>("100");
+
+  const [openDocument, setOpenDocument] = useState<boolean>(false);
 
   const classes = useStyles();
 
@@ -118,27 +136,106 @@ export const PredictionPanel: React.FC<Props> = (props) => {
     });
   }
 
+  const predictionData: PredictionInformationList[] = [];
+
+  if (dataset.predictionApplied) {
+    predictionData.push({
+      title: "Request configuration",
+      list: [
+        { title: "Feature predicted", value: dataset.prediction.feature },
+        {
+          title: "Prediction features type",
+          value: getPredictionFeaturesTypeString(
+            dataset.prediction.predictionFeaturesType
+          ),
+        },
+      ],
+    });
+    if (dataset.prediction.principalComponentsNumber > 0) {
+      predictionData[0].list.push({
+        title: "Principal Components number",
+        value: dataset.prediction.principalComponentsNumber,
+      });
+    }
+
+    predictionData.push({
+      title: "LSTM configuration",
+      list: [{ title: "Epochs", value: dataset.prediction.epochs }],
+    });
+
+    predictionData.push({
+      title: "LSTM Result",
+      list: [
+        {
+          title: "RMSE (Root Mean Square Error)",
+          value: `${Number(dataset.prediction.rmse).toFixed(5)}`,
+        },
+        {
+          title: "Prediction time",
+          value: `${Number(dataset.prediction.time).toFixed(3)} seconds`,
+        },
+      ],
+    });
+  }
+
   return (
     <Grid container xs={12} spacing={3}>
       <Grid item xs={12}>
         <div className={classes.form}>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<TimelineRoundedIcon />}
-            onClick={() => {
-              onPredictionButtonClick(
-                dataset.id,
-                featureSelected,
-                Number(epochs),
-                predictionFeaturesType,
-                componentsNumber
-              );
-            }}
-            className={classes.button}
-          >
-            Apply prediction
-          </Button>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<TimelineRoundedIcon />}
+              onClick={() => {
+                onPredictionButtonClick(
+                  dataset.id,
+                  featureSelected,
+                  Number(epochs),
+                  predictionFeaturesType,
+                  predictionFeaturesType === PredictionFeaturesType.PCA
+                    ? componentsNumber
+                    : 0
+                );
+              }}
+              className={classes.button}
+            >
+              Apply prediction
+            </Button>
+          </Grid>
+          {dataset.predictionApplied && (
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setOpenDocument(!openDocument)}
+                className={classes.button}
+                endIcon={<DescriptionIcon />}
+              >
+                Generate document
+              </Button>
+              <Dialog open={openDocument} maxWidth={"lg"}>
+                <Paper>
+                  <Button
+                    onClick={() => setOpenDocument(!openDocument)}
+                    endIcon={<CancelIcon />}
+                    className={classes.cancel}
+                    variant="contained"
+                    fullWidth={true}
+                  >
+                    CLOSE
+                  </Button>
+                </Paper>
+                <PDFViewer className={classes.pdf}>
+                  <DocumentPDF
+                    data={predictionChartsData}
+                    title="Prediction results"
+                    predictionInformation={predictionData}
+                  />
+                </PDFViewer>
+              </Dialog>
+            </Grid>
+          )}
           <FormControl
             component="fieldset"
             className={classes.predictionFeaturesTypeForm}
@@ -223,97 +320,36 @@ export const PredictionPanel: React.FC<Props> = (props) => {
                   </Typography>
                 </CardContent>
                 <Grid container>
-                  <Grid
-                    item
-                    xs={4}
-                    className={classes.informationPredictionSection}
-                  >
-                    <Typography
-                      className={classes.informationPredictionSectionTitle}
-                      variant="h6"
-                    >
-                      Request configuration
-                    </Typography>
-                    <Divider />
-                    <List>
-                      <ListItem>
-                        <ListItemText
-                          primary="Feature predicted"
-                          secondary={dataset.prediction.feature}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Prediction features type"
-                          secondary={getPredictionFeaturesTypeString(
-                            dataset.prediction.predictionFeaturesType
-                          )}
-                        />
-                      </ListItem>
-                      {dataset.prediction.principalComponentsNumber && (
-                        <ListItem>
-                          <ListItemText
-                            primary="Principal Components number"
-                            secondary={
-                              dataset.prediction.principalComponentsNumber
-                            }
-                          />
-                        </ListItem>
-                      )}
-                    </List>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    className={classes.informationPredictionSection}
-                  >
-                    <Typography
-                      className={classes.informationPredictionSectionTitle}
-                      variant="h6"
-                    >
-                      LSTM configuration
-                    </Typography>
-                    <Divider />
-                    <List>
-                      <ListItem>
-                        <ListItemText
-                          primary="Epochs"
-                          secondary={dataset.prediction.epochs}
-                        />
-                      </ListItem>
-                    </List>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    className={classes.informationPredictionSection}
-                  >
-                    <Typography
-                      className={classes.informationPredictionSectionTitle}
-                      variant="h6"
-                    >
-                      LSTM result
-                    </Typography>
-                    <Divider />
-                    <List>
-                      <ListItem>
-                        <ListItemText
-                          primary="RMSE (Root Mean Square Error)"
-                          secondary={`${Number(dataset.prediction.rmse).toFixed(
-                            5
-                          )}`}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Prediction time"
-                          secondary={`${Number(dataset.prediction.time).toFixed(
-                            3
-                          )} seconds`}
-                        />
-                      </ListItem>
-                    </List>
-                  </Grid>
+                  {predictionData.map((d, i) => {
+                    return (
+                      <Grid
+                        item
+                        xs={4}
+                        className={classes.informationPredictionSection}
+                        key={i}
+                      >
+                        <Typography
+                          className={classes.informationPredictionSectionTitle}
+                          variant="h6"
+                        >
+                          {d.title}
+                        </Typography>
+                        <Divider />
+                        <List>
+                          {d.list.map((l, i) => {
+                            return (
+                              <ListItem>
+                                <ListItemText
+                                  primary={l.title}
+                                  secondary={l.value}
+                                />
+                              </ListItem>
+                            );
+                          })}
+                        </List>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               </CardActionArea>
             </Card>

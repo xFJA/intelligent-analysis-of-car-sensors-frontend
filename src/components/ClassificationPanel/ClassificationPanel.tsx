@@ -26,7 +26,7 @@ import { Record as DataRecord } from "../../models/bar";
 import { ClassificationCluster } from "./ClassificationCluster";
 import { Input } from "./ClassificationForm";
 import { PDFViewer } from "@react-pdf/renderer";
-import { ClassificationDocument } from "./ClassificationDocument";
+import { DocumentPDF } from "../Utils/Document";
 import { Chart } from "../../models/pdf";
 import DescriptionIcon from "@material-ui/icons/Description";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
@@ -245,7 +245,10 @@ export const ClassificationPanel: React.FC<Props> = (props) => {
                     </Button>
                   </Paper>
                   <PDFViewer className={classes.pdf}>
-                    {ClassificationDocument(classificationChartsData)}
+                    <DocumentPDF
+                      data={classificationChartsData}
+                      title="Classification charts"
+                    />
                   </PDFViewer>
                 </Dialog>
               </Grid>

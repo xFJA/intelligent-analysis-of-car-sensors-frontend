@@ -16,3 +16,13 @@ export const getPredictionFeaturesTypeString = (
       return "PCA";
   }
 };
+
+export interface PredictionInformationList {
+  title: string;
+  list: PredictionInformationSection[];
+}
+
+interface PredictionInformationSection {
+  title: string;
+  value: any;
+}
