@@ -5,6 +5,7 @@ import {
   Dataset,
   SensorsRequest,
 } from "../models/dataset";
+import { PredictionFeaturesType } from "../models/prediction";
 
 // TODO: Add the base url by config or env
 const BASE_URL: string = "http://localhost:8080/";
@@ -92,10 +93,11 @@ export class Api {
   predict = async (
     id: number,
     feature: string,
-    epochs: number
+    epochs: number,
+    predictionsFeatureType: PredictionFeaturesType
   ): Promise<Dataset> => {
     return await axios(
-      `${BASE_URL}predict/${id}?feature=${feature}&epochs=${epochs}`
+      `${BASE_URL}predict/${id}?feature=${feature}&epochs=${epochs}&predictions-feature-type=${predictionsFeatureType}`
     ).then((response: any) => {
       if (response.status !== 200) throw new Error(JSON.stringify(Response));
       return response.data;

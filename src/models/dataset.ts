@@ -1,4 +1,5 @@
 import { KMeansResult, SVMResult } from "./ai";
+import { PredictionFeaturesType } from "./prediction";
 
 export interface DatasetsRequest {
   data: LightDataset[];
@@ -86,4 +87,5 @@ export interface Prediction {
   time: string;
   feature: string;
   epochs: number;
+  predictionFeaturesType: PredictionFeaturesType;
 }

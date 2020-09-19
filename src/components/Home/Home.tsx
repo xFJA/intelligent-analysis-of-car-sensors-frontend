@@ -31,6 +31,7 @@ import { Record as DataRecord } from "./../../models/bar";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { PredictionPanel } from "../PredictionPanel/PredictionPanel";
+import { PredictionFeaturesType } from "../../models/prediction";
 
 const service = new Api();
 
@@ -220,12 +221,13 @@ export const Home: React.FC = () => {
   const onPredictionButtonClick = (
     id: number,
     feature: string,
-    epochs: number
+    epochs: number,
+    predictionsFeatureType: PredictionFeaturesType
   ) => {
     setPredictionLoading(true);
 
     service
-      .predict(id, feature, epochs)
+      .predict(id, feature, epochs, predictionsFeatureType)
       .then((res) => {
         setPredictionLoading(false);
         setDatasetSelected(res);

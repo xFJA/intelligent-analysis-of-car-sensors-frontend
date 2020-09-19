@@ -24,7 +24,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Dataset, Sensor } from "../../models/dataset";
-import { PredictionFeaturesType } from "./../../models/prediction";
+import { PredictionFeaturesType, getPredictionFeaturesTypeString } from "./../../models/prediction";
 import TimelineRoundedIcon from "@material-ui/icons/TimelineRounded";
 import { Input } from "../ClassificationPanel/ClassificationForm";
 import { Chart } from "../../models/pdf";
@@ -87,7 +87,7 @@ export const PredictionPanel: React.FC<Props> = (props) => {
 
   const predictionChartsData: Chart[] = [];
 
-  if (dataset.classificationApplied) {
+  if (dataset.predictionApplied) {
     predictionChartsData.push({
       title: "Learning curve",
       description:
@@ -114,7 +114,8 @@ export const PredictionPanel: React.FC<Props> = (props) => {
               onPredictionButtonClick(
                 dataset.id,
                 featureSelected,
-                Number(epochs)
+                Number(epochs),
+                predictionFeaturesType
               );
             }}
             className={classes.button}
@@ -217,6 +218,12 @@ export const PredictionPanel: React.FC<Props> = (props) => {
                         <ListItemText
                           primary="Feature predicted"
                           secondary={dataset.prediction.feature}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Prediction features type"
+                          secondary={getPredictionFeaturesTypeString(dataset.prediction.predictionFeaturesType)}
                         />
                       </ListItem>
                     </List>
